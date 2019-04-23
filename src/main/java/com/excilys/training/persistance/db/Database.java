@@ -3,8 +3,12 @@ package com.excilys.training.persistance.db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import com.excilys.training.util.ConfigurationProperties;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public abstract class Database {
+	
+	protected static Logger logger = LogManager.getLogger(Database.class);
 	
 	ConfigurationProperties config;
 	protected String jdbcUrl ;
@@ -20,8 +24,9 @@ public abstract class Database {
 			Class.forName(config.readProperty("driver"));
 		}
 		catch(ClassNotFoundException exp) {
+			logger.error("Unable to load Mysql Driver",exp);
 			//log the bloody exception
-			System.err.println("Unable to load Mysql Driver");			
+			System.err.println();			
 		}
 	}
 	
@@ -32,8 +37,7 @@ public abstract class Database {
 					config.readProperty("username"),
 					config.readProperty("password"));
 		}catch(Exception exp) {
-			System.err.println("Database encountered a problem");
-			System.err.println("Exception" + exp.getMessage());
+			logger.error("Database encountered a problem",exp);
 		}
 		return connection;
 	}	

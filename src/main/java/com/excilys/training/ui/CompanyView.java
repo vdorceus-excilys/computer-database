@@ -10,8 +10,12 @@ import com.excilys.training.mapper.dto.DataTransferObject;
 import com.excilys.training.mapper.dto.DefaultCompanySkin;
 import com.excilys.training.model.Company;
 import com.excilys.training.model.validator.CompanyDefaultValidator;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class CompanyView implements View<Company> {
+	
+	private static Logger logger = LogManager.getLogger(CompanyView.class);
 	private final Controller<Company> controller;
 	
 	public CompanyView() {
@@ -56,7 +60,7 @@ public class CompanyView implements View<Company> {
 			DefaultCompanySkin company = (DefaultCompanySkin) controller.show(id);
 			System.out.println("<"+company.getId()+"> "+company.getName()  );
 		}catch(Exception exp) {
-			System.err.println("Une erreur s'est produite");
+			logger.error("Une erreur s'est produite dans la vue Company",exp);
 		}
 		
 		System.out.println("=======================================");
@@ -80,7 +84,7 @@ public class CompanyView implements View<Company> {
 			try{
 				Launcher.read();
 			}catch(Exception exp) {
-				
+				logger.error("Failed to read user input",exp);
 			}
 		}
 		System.out.println("====================================");
@@ -100,7 +104,7 @@ public class CompanyView implements View<Company> {
 			company.setName(companyParams[1]);
 			controller.create(company);
 		}catch(Exception exp) {
-			System.err.println("Une erreur s'est produite");
+			logger.error("Failed to create DTO object in company view",exp);
 		}		
 		System.out.println("=======================================");		
 	}
@@ -120,7 +124,7 @@ public class CompanyView implements View<Company> {
 			company.setName(companyParams[1]);
 			controller.update(company);
 		}catch(Exception exp) {
-			System.err.println("Une erreur s'est produite");
+			logger.error("Une erreur s'est produite",exp);
 		}		
 		System.out.println("=======================================");			
 	}

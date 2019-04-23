@@ -1,6 +1,9 @@
 package com.excilys.training.controller;
 import java.util.Set;
+
 import java.util.TreeSet;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.excilys.training.mapper.Mapper;
 import com.excilys.training.mapper.dto.DataTransferObject;
@@ -11,6 +14,8 @@ import com.excilys.training.service.ComputerService;
 import com.excilys.training.service.Service;
 
 public class ComputerController implements Controller<Computer>{
+	
+	private static Logger logger = LogManager.getLogger(ComputerController.class);
 	
 	private final Service<Computer> service;
 	private final Mapper<Computer,DataTransferObject<Computer>> mapper;

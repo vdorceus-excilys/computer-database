@@ -8,7 +8,6 @@ import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.persistance.db.Database;
 import com.excilys.training.persistance.db.Mysql;
 import com.excilys.training.util.ConfigurationProperties;
-import com.excilys.training.util.log.SimpleLogEntry;
 
 
 public class CompanyService extends GenericService<Company>{
@@ -25,8 +24,7 @@ public class CompanyService extends GenericService<Company>{
 		}
 		catch(Exception exp) {
 			//log service exception
-			SimpleLogEntry  s = new SimpleLogEntry(exp,"ERROR WHILE TRYING TO SET COMPANY CONFIGURATION WITH PROPERTIES");
-			log.log(s);
+			logger.error("ERROR WHILE TRYING TO SET COMPANY CONFIGURATION WITH PROPERTIES",exp);
 		}
 	}
 	
@@ -46,8 +44,7 @@ public class CompanyService extends GenericService<Company>{
 				}
 			} catch (Exception exp) {
 				// TODO Auto-generated catch block
-				SimpleLogEntry  s = new SimpleLogEntry(exp,"FAILED TO  FIND MODEL BY ATTRIBUTE NAME");
-				log.log(s);
+				logger.error("FAILED TO  FIND MODEL BY ATTRIBUTE NAME",exp);
 			}
 			
 		}

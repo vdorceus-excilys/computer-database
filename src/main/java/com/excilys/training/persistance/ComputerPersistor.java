@@ -7,12 +7,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
 import com.excilys.training.persistance.db.Database;
 
 public class ComputerPersistor implements Persistor<Computer> {
+	
+	private static Logger logger = LogManager.getLogger(ComputerPersistor.class);
 	
 	private static final String 
 					FIND_ALL_QUERY_LAZY="SELECT id, name, introduced, discontinued, company_id FROM computer",
@@ -43,8 +47,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 				computers.add(convertResultLine(rset));
 			}			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("SQL Exception while calling find-all-query",e);
 		}		
 		return computers;
 	}
@@ -61,8 +64,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 				computers.add(convertResultLine(rset));
 			}			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("SQL Exception while calling find-all-query",e);
 		}		
 		return computers;
 	}
@@ -79,8 +81,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 			stmt.setLong(5, computer.getCompany().getId());
 			stmt.execute();						
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("SQL Exception while calling find-all-query",e);
 		}	
 	}
 	@Override
@@ -91,8 +92,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 			stmt.setLong(1,computer.getId());
 			stmt.execute();			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("SQL Exception while calling find-all-query",e);
 		}
 	}
 	@Override
@@ -107,8 +107,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 			stmt.setLong(5, computer.getId());
 			stmt.execute();						
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("SQL Exception while calling find-all-query",e);
 		}	
 	}
 	@Override
@@ -123,8 +122,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 				computer = convertResultLine(rset);
 			}			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("SQL Exception while calling find-all-query",e);
 		}		
 		return computer;
 	}
@@ -137,7 +135,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 			count = rset.next()  ? rset.getLong(1) : 0L;						
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("SQL Exception while calling find-all-query",e);
 		}		
 		return count;
 	}
@@ -161,7 +159,6 @@ public class ComputerPersistor implements Persistor<Computer> {
 
 	@Override
 	public void setLazyStrategy(Boolean b) {
-		// TODO Auto-generated method stub
 		this.lazyStrategy = b;
 	}
 	
