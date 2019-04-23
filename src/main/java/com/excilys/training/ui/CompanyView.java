@@ -141,7 +141,7 @@ public class CompanyView implements View<Company> {
 			company.setId(companyString);
 			controller.delete(company);
 		}catch(Exception exp) {
-			System.err.println("Une erreur s'est produite");
+			logger.error("Une erreur s'est produite",exp);
 		}		
 		System.out.println("=======================================");	
 	}

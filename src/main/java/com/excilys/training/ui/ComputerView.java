@@ -3,6 +3,9 @@ package com.excilys.training.ui;
 import java.io.IOException;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.excilys.training.controller.ComputerController;
 import com.excilys.training.controller.Controller;
 import com.excilys.training.mapper.DefaultComputerMapper;
@@ -12,6 +15,8 @@ import com.excilys.training.model.Computer;
 import com.excilys.training.model.validator.ComputerDefaultValidator;
 
 public class ComputerView implements View<Computer>{
+	
+	private static Logger logger = LogManager.getLogger(ComputerView.class);
 	
 	private final Controller<Computer> controller;
 	
@@ -66,8 +71,8 @@ public class ComputerView implements View<Computer>{
 			
 			try{
 				Launcher.read();
-			}catch(Exception exp) {
-				
+			}catch(IOException exp) {
+				logger.error("IOException occured while trying to read user input from list action in Computer View",exp);
 			}
 		}
 		System.out.println("====================================");
@@ -81,8 +86,8 @@ public class ComputerView implements View<Computer>{
 			String id = Launcher.read();
 			DefaultComputerSkin computer = (DefaultComputerSkin) controller.show(id);
 			System.out.println("<"+computer.getId()+"> "+computer.getName()+", par : "+computer.getCompany() +" ["+computer.getIntroduced()+"//"+computer.getDiscontinued()+"]"  );
-		}catch(Exception exp) {
-			System.err.println("Une erreur s'est produite");
+		}catch(IOException exp) {
+			logger.error("IOException occured while trying to read  user input from show action in Computer view",exp);
 		}
 		
 		System.out.println("=======================================");
@@ -105,8 +110,8 @@ public class ComputerView implements View<Computer>{
 			computer.setDiscontinued(computerParams[3]);
 			computer.setCompany(computerParams[4]);
 			controller.create(computer);
-		}catch(Exception exp) {
-			System.err.println("Une erreur s'est produite");
+		}catch(IOException exp) {
+			logger.error("IOException while trying to read user input from create in Computer View",exp);
 		}		
 		System.out.println("=======================================");		
 	}
@@ -129,8 +134,8 @@ public class ComputerView implements View<Computer>{
 			computer.setDiscontinued(computerParams[3]);
 			computer.setCompany(computerParams[4]);
 			controller.update(computer);
-		}catch(Exception exp) {
-			System.err.println("Une erreur s'est produite");
+		}catch(IOException exp) {
+			logger.error("IOException occured while reading user input from update action in Computer View",exp);
 		}		
 		System.out.println("=======================================");	
 		
@@ -148,7 +153,7 @@ public class ComputerView implements View<Computer>{
 			computer.setId(computerString);
 			controller.delete(computer);
 		}catch(Exception exp) {
-			System.err.println("Une erreur s'est produite");
+			logger.error("IOException occured while reading user input from delete action in Computer View",exp);
 		}		
 		System.out.println("=======================================");			
 	}

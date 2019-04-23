@@ -4,22 +4,21 @@ import java.text.ParseException;
 import java.util.Date;
 
 import com.excilys.training.model.Computer;
-import com.excilys.training.util.log.SimpleLog;
-import com.excilys.training.util.log.SimpleLogEntry;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 
 public class ComputerDefaultValidator implements Validator<Computer> {
 	private static Date MINIMUM_DATE_LIMIT=null;
 	private static Date MAXIMUM_DATE_LIMIT=null;
-	private static SimpleLog log = SimpleLog.getInstance();
+	
+	private static Logger logger = LogManager.getLogger(ComputerDefaultValidator.class);
 	
 	static {
 		try{
 			MINIMUM_DATE_LIMIT = SDF.parse("01-01-1970");
 		}catch(ParseException exp) {
-			//log the bloddy thing
-			SimpleLogEntry e = new SimpleLogEntry(exp, "FAILED TO PARSE THE MINIMUM DATE FOR COMPUTER DEFAULT VALIDATOR");
-			log.log(e);
+			logger.error("ParseException occured while staticly initializing ComputerDefaultValidator class",exp);
 		}finally {
 			MAXIMUM_DATE_LIMIT = new Date();
 		}
@@ -41,8 +40,7 @@ public class ComputerDefaultValidator implements Validator<Computer> {
 					)
 				;
 		}catch(Exception exp) {
-			SimpleLogEntry  s = new SimpleLogEntry(exp,"ERROR WHILE TRYING RUNNING VALIDATOR FOR COMPUTER MODEL");
-			log.log(s);
+			logger.error("Exception occured while validating computer model",exp);
 		}
 		if(!valid)
 			throw new FailedValidationException();

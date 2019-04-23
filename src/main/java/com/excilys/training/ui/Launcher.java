@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 
 import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
-import com.excilys.training.util.log.SimpleLog;
 
 public class Launcher {
 	
@@ -23,8 +22,7 @@ public class Launcher {
 		computerView = new ComputerView();
 	}
 
-	public static void main(String[] args) throws IOException, Exception{		
-		SimpleLog.getInstance().debug(true);
+	public static void main(String[] args) throws IOException, Exception{
 		Launcher.menu();
 	}
 	
