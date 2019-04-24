@@ -45,6 +45,19 @@ public class Computer implements Comparable<Computer> {
 			
 		return this.getId().compareTo(c.getId());
 	}
+	@Override
+	public boolean equals(Object c) {
+		boolean eq = 
+				(c != null) &&
+				(c.getClass()==this.getClass()) &&
+				(this.id == ((Computer)c).getId()) &&
+				(this.name == ((Computer)c).getName()) &&
+				(this.introduced == ((Computer)c).getIntroduced()) &&
+				(this.discontinued == ((Computer)c).getDiscontinued()) &&
+				(this.company == ((Computer)c).getCompany())				
+		;
+		return eq;
+	}
 	
 	
 }

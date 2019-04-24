@@ -15,11 +15,17 @@ public class CompanyController implements Controller<Company> {
 	
 	private final Service<Company> service;
 	private final Mapper<Company,DataTransferObject<Company>> mapper;
+	private static Controller<Company> controller =null;
 	
-	public  CompanyController(Mapper<Company,DataTransferObject<Company>> mapper, Validator<Company> validator) {
+	private  CompanyController(Mapper<Company,DataTransferObject<Company>> mapper, Validator<Company> validator) {
 		this.service =  CompanyService.getInstance();
 		this.service.setValidator(validator);
 		this.mapper = mapper;
+	}
+	
+	
+	static public Controller<Company> getInstance(Mapper<Company,DataTransferObject<Company>> mapper, Validator<Company> validator){
+		return (controller!=null) ? controller : (controller = new CompanyController(mapper,validator));
 	}
 	
 	@Override

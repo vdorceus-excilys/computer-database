@@ -19,7 +19,7 @@ public class CompanyView implements View<Company> {
 	private final Controller<Company> controller;
 	
 	public CompanyView() {
-		controller = new CompanyController(new DefaultCompanyMapper(), new CompanyDefaultValidator());
+		controller = CompanyController.getInstance(new DefaultCompanyMapper(), new CompanyDefaultValidator());
 	}
 	
 	@Override

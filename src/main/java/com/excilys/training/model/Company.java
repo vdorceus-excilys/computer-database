@@ -21,4 +21,14 @@ public class Company implements Comparable<Company> {
 		
 		return this.getId().compareTo(c.getId());
 	}
+	@Override
+	public boolean equals(Object c) {
+		boolean eq = 
+				(c!=null) &&
+				(this.getClass() == c.getClass()) &&
+				(this.id == ((Company)c).getId()) &&
+				(this.name == ((Company)c).getName())
+		;
+		return eq;
+	}
 }

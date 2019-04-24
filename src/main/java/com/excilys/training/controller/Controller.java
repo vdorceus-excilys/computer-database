@@ -1,7 +1,8 @@
 package com.excilys.training.controller;
 
-import com.excilys.training.mapper.dto.DataTransferObject;
 import java.util.Set;
+
+import com.excilys.training.mapper.dto.DataTransferObject;
 
 public interface Controller<T> {
 	
@@ -12,5 +13,4 @@ public interface Controller<T> {
 	public Set<DataTransferObject<T>> list();
 	public Set<DataTransferObject<T>> list(Long offset, Long limit);
 	public Long count();
-
 }

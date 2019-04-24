@@ -19,11 +19,17 @@ public class ComputerController implements Controller<Computer>{
 	
 	private final Service<Computer> service;
 	private final Mapper<Computer,DataTransferObject<Computer>> mapper;
+	private static Controller<Computer> controller=null;
 	
-	public ComputerController(Mapper<Computer,DataTransferObject<Computer>>  mapper, Validator<Computer> validator) {
+	private ComputerController(Mapper<Computer,DataTransferObject<Computer>>  mapper, Validator<Computer> validator) {
 		this.service =  ComputerService.getInstance();
 		this.service.setValidator(validator);
 		this.mapper = mapper;
+	}
+	
+	
+	static public Controller<Computer> getInstance(Mapper<Computer,DataTransferObject<Computer>> mapper, Validator<Computer> validator){
+		return (controller!=null) ? controller : (controller = new ComputerController(mapper,validator));
 	}
 
 	@Override

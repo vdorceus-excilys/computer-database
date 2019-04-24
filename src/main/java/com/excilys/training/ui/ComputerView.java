@@ -21,7 +21,7 @@ public class ComputerView implements View<Computer>{
 	private final Controller<Computer> controller;
 	
 	public ComputerView() {
-		controller = new ComputerController(new DefaultComputerMapper(), new ComputerDefaultValidator());
+		controller = ComputerController.getInstance(new DefaultComputerMapper(), new ComputerDefaultValidator());
 	}
 	
 	@Override 
