@@ -3,6 +3,9 @@ package com.excilys.training.ui;
 import java.io.IOException;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.Controller;
 import com.excilys.training.mapper.DefaultCompanyMapper;
@@ -10,8 +13,11 @@ import com.excilys.training.mapper.dto.DataTransferObject;
 import com.excilys.training.mapper.dto.DefaultCompanySkin;
 import com.excilys.training.model.Company;
 import com.excilys.training.model.validator.CompanyDefaultValidator;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import com.excilys.training.persistance.CompanyPersistor;
+import com.excilys.training.persistance.db.Database;
+import com.excilys.training.persistance.db.Mysql;
+import com.excilys.training.service.CompanyService;
+import com.excilys.training.util.ConfigurationProperties;
 
 public class CompanyView implements View<Company> {
 	
@@ -19,7 +25,19 @@ public class CompanyView implements View<Company> {
 	private final Controller<Company> controller;
 	
 	public CompanyView() {
-		controller = CompanyController.getInstance(new DefaultCompanyMapper(), new CompanyDefaultValidator());
+		CompanyPersistor persistor=null;
+		try {
+			ConfigurationProperties config = new ConfigurationProperties();
+		config.load(ConfigurationProperties.DEFAULT_PERSISTANCE_PATH);		
+		Database db = new Mysql(config);
+		persistor = new CompanyPersistor(db);
+		}
+		catch(Exception exp) {
+			//log service exception
+			logger.error("ERROR WHILE TRYING TO SET COMPANY CONFIGURATION WITH PROPERTIES",exp);
+		}
+		CompanyService service = CompanyService.getInstance(persistor,new CompanyDefaultValidator());
+		controller = CompanyController.getInstance(service,new DefaultCompanyMapper());
 	}
 	
 	@Override

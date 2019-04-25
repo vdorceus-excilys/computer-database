@@ -1,16 +1,15 @@
 package com.excilys.training.controller;
 import java.util.Set;
-
 import java.util.TreeSet;
-import org.apache.logging.log4j.Logger;
+
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.excilys.training.mapper.Mapper;
 import com.excilys.training.mapper.dto.DataTransferObject;
 import com.excilys.training.mapper.dto.DefaultComputerSkin;
 import com.excilys.training.model.Computer;
 import com.excilys.training.model.validator.Validator;
-import com.excilys.training.service.ComputerService;
 import com.excilys.training.service.Service;
 
 public class ComputerController implements Controller<Computer>{
@@ -19,17 +18,16 @@ public class ComputerController implements Controller<Computer>{
 	
 	private final Service<Computer> service;
 	private final Mapper<Computer,DataTransferObject<Computer>> mapper;
-	private static Controller<Computer> controller=null;
+	private static ComputerController controller=null;
 	
-	private ComputerController(Mapper<Computer,DataTransferObject<Computer>>  mapper, Validator<Computer> validator) {
-		this.service =  ComputerService.getInstance();
-		this.service.setValidator(validator);
+	private ComputerController(Service<Computer> service,Mapper<Computer,DataTransferObject<Computer>>  mapper) {
+		this.service =  service;
 		this.mapper = mapper;
 	}
 	
 	
-	static public Controller<Computer> getInstance(Mapper<Computer,DataTransferObject<Computer>> mapper, Validator<Computer> validator){
-		return (controller!=null) ? controller : (controller = new ComputerController(mapper,validator));
+	static public ComputerController getInstance(Service<Computer> service,Mapper<Computer,DataTransferObject<Computer>> mapper){
+		return (controller!=null) ? controller : (controller = new ComputerController(service,mapper));
 	}
 
 	@Override

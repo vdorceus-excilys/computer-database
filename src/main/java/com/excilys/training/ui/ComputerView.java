@@ -12,7 +12,15 @@ import com.excilys.training.mapper.DefaultComputerMapper;
 import com.excilys.training.mapper.dto.DataTransferObject;
 import com.excilys.training.mapper.dto.DefaultComputerSkin;
 import com.excilys.training.model.Computer;
+import com.excilys.training.model.validator.CompanyDefaultValidator;
 import com.excilys.training.model.validator.ComputerDefaultValidator;
+import com.excilys.training.persistance.CompanyPersistor;
+import com.excilys.training.persistance.ComputerPersistor;
+import com.excilys.training.persistance.db.Database;
+import com.excilys.training.persistance.db.Mysql;
+import com.excilys.training.service.CompanyService;
+import com.excilys.training.service.ComputerService;
+import com.excilys.training.util.ConfigurationProperties;
 
 public class ComputerView implements View<Computer>{
 	
@@ -21,7 +29,22 @@ public class ComputerView implements View<Computer>{
 	private final Controller<Computer> controller;
 	
 	public ComputerView() {
-		controller = ComputerController.getInstance(new DefaultComputerMapper(), new ComputerDefaultValidator());
+		ComputerPersistor computerPersistor = null;
+		CompanyPersistor companyPersistor =null;
+		try {
+			ConfigurationProperties config = new ConfigurationProperties();
+		config.load(ConfigurationProperties.DEFAULT_PERSISTANCE_PATH);
+		Database db = new Mysql(config);
+		computerPersistor = new ComputerPersistor(db);
+		companyPersistor = new CompanyPersistor(db);
+		}
+		catch(Exception exp) {
+			//log service exception
+			logger.error("ERROR WHILE TRYING TO SET COMPUTER CONFIGURATION WITH PROPERTIES",exp);
+		}
+		ComputerService serviceComputer = ComputerService.getInstance(computerPersistor,new ComputerDefaultValidator());
+		CompanyService serviceCompany = CompanyService.getInstance(companyPersistor, new CompanyDefaultValidator());
+		controller = ComputerController.getInstance(serviceComputer,new DefaultComputerMapper(serviceCompany));
 	}
 	
 	@Override 

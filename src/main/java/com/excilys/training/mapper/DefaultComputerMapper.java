@@ -15,9 +15,10 @@ public class DefaultComputerMapper implements Mapper<Computer,DataTransferObject
 	private SimpleDateFormat sdf;
 	private Service<Company> companyService;
 	
-	public DefaultComputerMapper() {		
+	public DefaultComputerMapper(CompanyService service) {		
+		
 		sdf = new SimpleDateFormat("dd-MM-yyyy");
-		this.companyService  = CompanyService.getInstance();
+		this.companyService  = service;
 	}
 
 	@Override
@@ -28,14 +29,14 @@ public class DefaultComputerMapper implements Mapper<Computer,DataTransferObject
 		computer.setId(Long.parseLong(pojo.getId()));
 		computer.setName(pojo.getName());	
 		try {
-			String a=pojo.getIntroduced().trim(),b =pojo.getDiscontinued().trim();
+			String a=pojo.getIntroduced().trim();
+			String b =pojo.getDiscontinued().trim();
 			computer.setIntroduced((a==null || a.isEmpty())? null : sdf.parse(a));
 			computer.setDiscontinued((b==null ||a.isEmpty())? null : sdf.parse(b));
 		}catch(ParseException exp) {
 			System.err.println(exp.getMessage());
 		}
 		computer.setCompany(companyService.findByAttribut("NAME",pojo.getCompany()));
-		System.out.println("printing id of company linked with new computer"+computer.getCompany().getId());
 		return computer;
 	}
 

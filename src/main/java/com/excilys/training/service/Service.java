@@ -7,7 +7,7 @@ import com.excilys.training.model.validator.Validator;
 
 public interface Service <T> {
 	
-	void setValidator(Validator<T> validator);
+	Validator<T> getValidator();
 	void validate(T model) throws FailedValidationException;
 	
 	Set<T> listAll();

@@ -51,5 +51,18 @@ public class DefaultComputerSkin implements DataTransferObject<Computer>{
 		Long self=Long.parseLong(this.getId()),  other=Long.parseLong(sk.getId());
 		return self.compareTo(other);
 	}
+	@Override
+	public boolean equals(Object o) {
+		boolean eq =
+				(o!=null)&&
+				(this.getClass()==o.getClass())&&
+				(this.id.equals(((DefaultComputerSkin)o).getId()))&&
+				(this.name.equals(((DefaultComputerSkin)o).getName()))&&
+				(this.introduced.equals(((DefaultComputerSkin)o).getIntroduced()))&&
+				(this.discontinued.equals(((DefaultComputerSkin)o).getDiscontinued()))&&
+				(this.company.equals(((DefaultComputerSkin)o).getCompany()))
+			;
+		return eq;
+	}
 	
 }

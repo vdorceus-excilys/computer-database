@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 public class ConfigurationProperties {
 	
-	public final static String DEFAULT_PERSISTANCE_PATH="com/excilys/training/persistance/persistance.properties";
+	public final static String DEFAULT_PERSISTANCE_PATH="default.properties";
 	
 	private Map<String,String> config;
 	

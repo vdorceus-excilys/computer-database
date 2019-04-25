@@ -25,9 +25,9 @@ public class Company implements Comparable<Company> {
 	public boolean equals(Object c) {
 		boolean eq = 
 				(c!=null) &&
-				(this.getClass() == c.getClass()) &&
-				(this.id == ((Company)c).getId()) &&
-				(this.name == ((Company)c).getName())
+				(this.getClass().equals(c.getClass())) &&
+				(this.id.equals(((Company)c).getId())) &&
+				(this.name.equals(((Company)c).getName()))
 		;
 		return eq;
 	}

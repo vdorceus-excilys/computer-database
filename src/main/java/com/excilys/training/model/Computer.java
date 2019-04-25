@@ -49,12 +49,12 @@ public class Computer implements Comparable<Computer> {
 	public boolean equals(Object c) {
 		boolean eq = 
 				(c != null) &&
-				(c.getClass()==this.getClass()) &&
-				(this.id == ((Computer)c).getId()) &&
-				(this.name == ((Computer)c).getName()) &&
-				(this.introduced == ((Computer)c).getIntroduced()) &&
-				(this.discontinued == ((Computer)c).getDiscontinued()) &&
-				(this.company == ((Computer)c).getCompany())				
+				(c.getClass().equals(this.getClass())) &&
+				(this.id.equals(((Computer)c).getId())) &&
+				(this.name.equals(((Computer)c).getName())) &&
+				(this.introduced.equals(((Computer)c).getIntroduced())) &&
+				(this.discontinued.equals(((Computer)c).getDiscontinued())) &&
+				(this.company.equals(((Computer)c).getCompany()))				
 		;
 		return eq;
 	}

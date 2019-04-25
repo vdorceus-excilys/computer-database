@@ -21,65 +21,61 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import com.excilys.training.controller.ComputerController;
+import com.excilys.training.controller.CompanyController;
+import com.excilys.training.mapper.DefaultCompanyMapper;
 import com.excilys.training.mapper.DefaultComputerMapper;
 import com.excilys.training.mapper.dto.DataTransferObject;
+import com.excilys.training.mapper.dto.DefaultCompanySkin;
 import com.excilys.training.mapper.dto.DefaultComputerSkin;
 import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
+import com.excilys.training.model.validator.CompanyDefaultValidator;
 import com.excilys.training.model.validator.ComputerDefaultValidator;
-import com.excilys.training.service.ComputerService;
+import com.excilys.training.service.CompanyService;
 
-public class ComputerControllerTest {
-	
-	@Mock ComputerService service;
-	@Mock DefaultComputerMapper mapper;
-	@Mock ComputerDefaultValidator validator;
-	Computer computerDummy= new Computer();
-	DefaultComputerSkin skinDummy ;
-	ComputerController controller;
+public class CompanyControllerTest {
+
+	@Mock CompanyService service;
+	@Mock DefaultCompanyMapper mapper;
+	@Mock CompanyDefaultValidator validator;
+	Company companyDummy= new Company();
+	DefaultCompanySkin skinDummy ;
+	CompanyController controller;
 	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();	
 	
 	
 	public void dummy() {
-		computerDummy.setId(1L);
-		computerDummy.setName("Ordinateur de travail");
-		computerDummy.setIntroduced(new Date());
-		Company companyDummy = new Company();
 		companyDummy.setId(1L);
-		companyDummy.setName("Apple");
-		computerDummy.setCompany(companyDummy);
-		skinDummy = new DefaultComputerSkin();
+		companyDummy.setName("Ordinateur de travail");
+		skinDummy = new DefaultCompanySkin();
 		skinDummy.setId("1");
 		skinDummy.setName("Ordinateur de travail");
-		skinDummy.setIntroduced("24-04-2019");
-		skinDummy.setCompany("Apple");
 	}
 
 
 	@Before
 	public void setUp() throws Exception {
 		this.dummy();
-		mapper = mock(DefaultComputerMapper.class);
-		validator = mock(ComputerDefaultValidator.class);
-		when(mapper.forward(skinDummy)).thenReturn(computerDummy);
-		when(mapper.reverse(computerDummy)).thenReturn(skinDummy);
-		doNothing().when(validator).validate(computerDummy);
-		when(service.update(any(Computer.class))).thenReturn(true);
-		when(service.create(any(Computer.class))).thenReturn(true);
-		when(service.delete(any(Computer.class))).thenReturn(true);
+		mapper = mock(DefaultCompanyMapper.class);
+		validator = mock(CompanyDefaultValidator.class);
+		when(mapper.forward(skinDummy)).thenReturn(companyDummy);
+		when(mapper.reverse(companyDummy)).thenReturn(skinDummy);
+		doNothing().when(validator).validate(companyDummy);
+		when(service.update(any(Company.class))).thenReturn(true);
+		when(service.create(any(Company.class))).thenReturn(true);
+		when(service.delete(any(Company.class))).thenReturn(true);
 		when(service.count()).thenReturn(1L);
-		when(service.listAll()).thenReturn(new TreeSet<Computer>(Arrays.asList(new Computer[] {computerDummy})));
-		when(service.listAll(anyLong(),anyLong())).thenReturn(new TreeSet<Computer>(Arrays.asList(new Computer[] {computerDummy})));
-		when(service.findOne(anyLong())).thenReturn(computerDummy);
-		when(service.findByAttribut(anyString(),anyString())).thenReturn(computerDummy);
-		controller = ComputerController.getInstance(service,mapper);
+		when(service.listAll()).thenReturn(new TreeSet<Company>(Arrays.asList(new Company[] {companyDummy})));
+		when(service.listAll(anyLong(),anyLong())).thenReturn(new TreeSet<Company>(Arrays.asList(new Company[] {companyDummy})));
+		when(service.findOne(anyLong())).thenReturn(companyDummy);
+		when(service.findByAttribut(anyString(),anyString())).thenReturn(companyDummy);
+		controller = CompanyController.getInstance(service,mapper);
 	}
 
 
 	@Test
 	public void showMethod() {
-		DefaultComputerSkin computerDTO = (DefaultComputerSkin) controller.show("1");
+		DefaultCompanySkin computerDTO = (DefaultCompanySkin) controller.show("1");
 		assertEquals(computerDTO,skinDummy);
 	}
 	
@@ -102,13 +98,13 @@ public class ComputerControllerTest {
 	}
 	@Test
 	public void simpleListMethod() {
-		Set<DataTransferObject<Computer>> listComputerDTO = controller.list();
+		Set<DataTransferObject<Company>> listComputerDTO = controller.list();
 		assertEquals(1,listComputerDTO.size());
 		assertTrue(listComputerDTO.contains(skinDummy));		
 	}
 	@Test
 	public void pagedListMethod() {
-		Set<DataTransferObject<Computer>> listComputerDTO = controller.list(1L,2L);
+		Set<DataTransferObject<Company>> listComputerDTO = controller.list(1L,2L);
 		assertEquals(1,listComputerDTO.size());
 		assertTrue(listComputerDTO.contains(skinDummy));		
 	}
@@ -117,5 +113,5 @@ public class ComputerControllerTest {
 		Long count = controller.count();
 		
 	}
-
+	
 }

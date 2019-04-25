@@ -17,8 +17,8 @@ public abstract class GenericService<T> implements Service<T> {
 	// Singleton Pattern to be implemented in child classes	
 	
 	@Override
-	public void setValidator(Validator<T> validator) {
-		this.validator = validator;
+	public Validator<T> getValidator() {
+		return this.validator;
 	}
 	@Override
 	public void validate (T model) throws FailedValidationException{

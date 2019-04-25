@@ -29,6 +29,17 @@ public class DefaultCompanySkin implements DataTransferObject<Company> {
 		Long self=Long.parseLong(this.getId()),  other=Long.parseLong(sk.getId());
 		return self.compareTo(other);
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		boolean eq =
+				(o!=null)&&
+				(this.getClass()==o.getClass())&&
+				(this.id == ((DefaultCompanySkin)o).getId())&&
+				(this.name == ((DefaultCompanySkin)o).getName())
+			;
+		return eq;
+	}
 
 	
 

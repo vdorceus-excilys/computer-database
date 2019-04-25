@@ -4,6 +4,7 @@ package com.excilys.training.service;
 import java.util.Set;
 
 import com.excilys.training.model.Company;
+import com.excilys.training.model.validator.Validator;
 import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.persistance.db.Database;
 import com.excilys.training.persistance.db.Mysql;
@@ -14,22 +15,15 @@ public class CompanyService extends GenericService<Company>{
 	
 	static private CompanyService self=null;
 	
-	private CompanyService() {
-		super();
-		try {
-			ConfigurationProperties config = new ConfigurationProperties();
-		config.load(ConfigurationProperties.DEFAULT_PERSISTANCE_PATH);		
-		Database db = new Mysql(config);
-		this.persistor = new CompanyPersistor(db);
-		}
-		catch(Exception exp) {
-			//log service exception
-			logger.error("ERROR WHILE TRYING TO SET COMPANY CONFIGURATION WITH PROPERTIES",exp);
-		}
+	private CompanyService(CompanyPersistor persistor,Validator<Company> validator) {
+		super();		
 	}
 	
-	public static CompanyService getInstance() {
-		return (self!=null)? self : (self=new CompanyService());
+	public static CompanyService getInstance(CompanyPersistor persistor, Validator<Company> validator) {
+		self = (self!=null)? self : (self=new CompanyService(persistor,validator));
+		self.validator = validator;
+		self.persistor = persistor;
+		return self;
 	}
 	
 	@Override

@@ -8,24 +8,22 @@ import com.excilys.training.mapper.dto.DataTransferObject;
 import com.excilys.training.mapper.dto.DefaultCompanySkin;
 import com.excilys.training.model.Company;
 import com.excilys.training.model.validator.Validator;
-import com.excilys.training.service.CompanyService;
 import com.excilys.training.service.Service;
 
 public class CompanyController implements Controller<Company> {
 	
 	private final Service<Company> service;
 	private final Mapper<Company,DataTransferObject<Company>> mapper;
-	private static Controller<Company> controller =null;
+	private static CompanyController controller =null;
 	
-	private  CompanyController(Mapper<Company,DataTransferObject<Company>> mapper, Validator<Company> validator) {
-		this.service =  CompanyService.getInstance();
-		this.service.setValidator(validator);
+	private  CompanyController(Service<Company> service,Mapper<Company,DataTransferObject<Company>> mapper) {
+		this.service =  service;
 		this.mapper = mapper;
 	}
 	
 	
-	static public Controller<Company> getInstance(Mapper<Company,DataTransferObject<Company>> mapper, Validator<Company> validator){
-		return (controller!=null) ? controller : (controller = new CompanyController(mapper,validator));
+	static public CompanyController getInstance(Service<Company> service, Mapper<Company,DataTransferObject<Company>> mapper){
+		return (controller!=null) ? controller : (controller = new CompanyController(service,mapper));
 	}
 	
 	@Override

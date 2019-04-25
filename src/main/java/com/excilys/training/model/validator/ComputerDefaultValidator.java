@@ -31,12 +31,12 @@ public class ComputerDefaultValidator implements Validator<Computer> {
 				&& (computer.getId()>0)
 				&& (computer.getName().length()>2)
 				&& (computer.getIntroduced()==null || (
-						computer.getIntroduced().compareTo(MINIMUM_DATE_LIMIT)<0 &&
-						computer.getIntroduced().compareTo(MAXIMUM_DATE_LIMIT)>=0)
+						computer.getIntroduced().compareTo(MINIMUM_DATE_LIMIT)>0 &&
+						computer.getIntroduced().compareTo(MAXIMUM_DATE_LIMIT)<=0)
 					)
 				&& (computer.getDiscontinued()==null || computer.getIntroduced()!=null &&(
-						computer.getDiscontinued().compareTo(computer.getIntroduced())<0 &&
-						computer.getDiscontinued().compareTo(MAXIMUM_DATE_LIMIT)>=0)
+						computer.getDiscontinued().compareTo(computer.getIntroduced())>0 &&
+						computer.getDiscontinued().compareTo(MAXIMUM_DATE_LIMIT)<=0)
 					)
 				;
 		}catch(Exception exp) {
