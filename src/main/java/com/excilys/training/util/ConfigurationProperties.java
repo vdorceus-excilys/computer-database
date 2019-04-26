@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class ConfigurationProperties {
 	
 	public final static String DEFAULT_PERSISTANCE_PATH="default.properties";
+	public final static String H2_TEST_PERSISTANCE_PATH="test.properties";
 	
 	private Map<String,String> config;
 	
