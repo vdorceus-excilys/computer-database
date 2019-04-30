@@ -31,4 +31,8 @@ public class Company implements Comparable<Company> {
 		;
 		return eq;
 	}
+	@Override
+	public String toString() {
+		return " ID="+getId()+" NAME="+getName();
+	}
 }

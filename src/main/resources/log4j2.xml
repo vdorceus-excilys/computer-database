@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="ERROR" name="cdb" packages="">
+<Configuration  name="cdb" packages="">
 	<Appenders>
         <Console name="stdout" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
@@ -12,7 +12,7 @@
     </Appenders>
 
 <Loggers>
-<Root level="ALL">
+<Root level="DEBUG">
 	<AppenderRef ref="fout"/>
 </Root>	
 <Root level="ERROR">

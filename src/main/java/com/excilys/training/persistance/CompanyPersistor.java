@@ -15,15 +15,15 @@ public class CompanyPersistor implements Persistor<Company>{
 	
 	
 	private static final String 
-					FIND_ALL_QUERY_LAZY="SELECT id, name FROM company",
-					FIND_ALL_QUERY_LIMIT="SELECT id, name FROM company LIMIT ?, ?",
-					FIND_ALL_QUERY="SELECT id, name FROM company",
-					FIND_ONE_QUERY="SELECT id, name FROM company WHERE id = ? LIMIT 1",
-					FIND_ONE_QUERY_LAZY="SELECT id, name FROM company WHERE id = ? LIMIT 1",
-					CREATE_QUERY ="INSERT INTO company(`id`,`name`) VALUES(?,?)",
-					DELETE_QUERY="DELETE FROM company where id = ?",
-					UPDATE_QUERY="UPDATE company SET name = ? WHERE id = ?",
-					COUNT_QUERY="SELECT COUNT(*)  FROM company"
+					FIND_ALL_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company`",
+					FIND_ALL_QUERY_LIMIT="SELECT `id`, `name` FROM `computer-database-db`.`company` LIMIT ?, ?",
+					FIND_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company`",
+					FIND_ONE_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1",
+					FIND_ONE_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1",
+					CREATE_QUERY ="INSERT INTO `computer-database-db`.`company`(`id`,`name`) VALUES(?,?)",
+					DELETE_QUERY="DELETE FROM `computer-database-db`.`company` where `id` = ?",
+					UPDATE_QUERY="UPDATE `computer-database-db`.`company` SET `name` = ? WHERE `id` = ?",
+					COUNT_QUERY="SELECT COUNT(*)  FROM `computer-database-db`.`company`"
 					;
 	
 	private final Database database;

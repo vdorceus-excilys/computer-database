@@ -49,8 +49,8 @@ public class DefaultComputerMapper implements Mapper<Computer,DataTransferObject
 		
 		skin.setIntroduced( (pojo.getIntroduced()!=null) ? sdf.format(pojo.getIntroduced()) : null );		
 		skin.setDiscontinued( (pojo.getDiscontinued()!=null) ? sdf.format(pojo.getDiscontinued()) : null  );
-		
-		skin.setCompany(pojo.getCompany().getName());
+		if(pojo.getCompany()!=null)
+			skin.setCompany(pojo.getCompany().getName());
 		return skin;
 	}
 

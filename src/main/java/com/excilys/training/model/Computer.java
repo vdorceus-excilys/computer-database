@@ -51,12 +51,29 @@ public class Computer implements Comparable<Computer> {
 				(c != null) &&
 				(c.getClass().equals(this.getClass())) &&
 				(this.id.equals(((Computer)c).getId())) &&
-				(this.name.equals(((Computer)c).getName())) &&
-				(this.introduced.equals(((Computer)c).getIntroduced())) &&
-				(this.discontinued.equals(((Computer)c).getDiscontinued())) &&
-				(this.company.equals(((Computer)c).getCompany()))				
+				(this.name.equals(((Computer)c).getName()))			
 		;
+		//introduced
+		if(this.introduced!=null)
+			eq = eq && (this.introduced.equals(((Computer)c).getIntroduced()));
+		else if(((Computer)c).getIntroduced()!=null )
+			eq=false;
+		//discontinued
+		if(this.discontinued!=null)
+			eq = eq && (this.discontinued.equals(((Computer)c).getDiscontinued()));
+		else if(((Computer)c).getDiscontinued()!=null )
+			eq=false;
+		//company
+		if(this.company!=null)
+			eq = eq && (this.company.equals(((Computer)c).getCompany()));
+		else if(((Computer)c).getCompany()!=null )
+			eq=false;
 		return eq;
+	}
+	@Override
+	public String toString() {
+		
+		return "ID="+getId()+" NAME="+getName()+" INTRO="+getIntroduced()+" DISC="+getDiscontinued()+" COMPANY="+getCompany();
 	}
 	
 	

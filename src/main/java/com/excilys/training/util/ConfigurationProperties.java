@@ -1,17 +1,20 @@
 package com.excilys.training.util;
 
-import static java.lang.System.out;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConfigurationProperties {
 	
 	public final static String DEFAULT_PERSISTANCE_PATH="default.properties";
 	public final static String H2_TEST_PERSISTANCE_PATH="test.properties";
+	private static Logger logger = LogManager.getLogger(ConfigurationProperties.class);
+	private Properties properties;
 	
 	private Map<String,String> config;
 	
@@ -20,7 +23,7 @@ public class ConfigurationProperties {
 	}
 	
 	public void load(String path) throws IOException,ConfigurationException {
-		Properties properties = new Properties();
+		properties = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		InputStream fileProperties = classLoader.getResourceAsStream(path);
 		
@@ -32,8 +35,8 @@ public class ConfigurationProperties {
             for(String name : properties.stringPropertyNames()) {
             	this.config.put(name,properties.getProperty(name));
             }
-        } catch ( IOException e ) {
-            out.println("IOException reading properties");
+        } catch ( IOException exp ) {
+            logger.error("IOException reading properties",exp);
         }
 	}
 	public Map<String,String> getAllProperties(){
@@ -41,6 +44,9 @@ public class ConfigurationProperties {
 	}
 	public String readProperty(String name) {
 		return this.config.get(name);
+	}
+	public Properties getPropertiesObject() {
+		return properties;
 	}
 	
 }

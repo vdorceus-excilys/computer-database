@@ -1,57 +1,25 @@
--- MySQL Workbench Forward Engineering
+drop all objects;
+drop schema if exists `computer-database-db`;
+  create schema if not exists `computer-database-db`;
+  use `computer-database-db`;
 
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+  drop table if exists `computer`;
+  drop table if exists `company`;
 
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema cdb-test-db-db
--- -----------------------------------------------------
+  create table `company` (
+    `id` bigint not null auto_increment,
+    `name` varchar(255),
+    constraint `pk_company` primary key (`id`))
+  ;
 
--- -----------------------------------------------------
--- Schema cdb-test-db-db
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `cdb-test-db-db` DEFAULT CHARACTER SET latin1 ;
-USE `cdb-test-db-db` ;
+  create table `computer` (
+    `id` bigint not null auto_increment,
+    `name` varchar(255),
+    `introduced` timestamp NULL,
+    `discontinued` timestamp NULL,
+    `company_id` bigint default NULL,
+    constraint `pk_computer` primary key (`id`))
+  ;
 
--- -----------------------------------------------------
--- Table `cdb-test-db-db`.`company`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `cdb-test-db-db`.`company` ;
-
-CREATE TABLE IF NOT EXISTS `cdb-test-db-db`.`company` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 101
-DEFAULT CHARACTER SET = latin1;
-
-
--- -----------------------------------------------------
--- Table `cdb-test-db-db`.`computer`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `cdb-test-db-db`.`computer` ;
-
-CREATE TABLE IF NOT EXISTS `cdb-test-db-db`.`computer` (
-  `id` BIGINT(20) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NULL DEFAULT NULL,
-  `introduced` TIMESTAMP NULL DEFAULT NULL,
-  `discontinued` TIMESTAMP NULL DEFAULT NULL,
-  `company_id` BIGINT(20) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `ix_computer_company_1` (`company_id` ASC),
-  CONSTRAINT `fk_computer_company_1`
-    FOREIGN KEY (`company_id`)
-    REFERENCES `cdb-test-db-db`.`company` (`id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 101
-DEFAULT CHARACTER SET = latin1;
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+  alter table `computer` add constraint `fk_computer_company_1` foreign key (`company_id`) references company (`id`) on delete restrict on update restrict;
+  create index `ix_computer_company_1` on computer (`company_id`);

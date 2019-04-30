@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Set;
 import java.util.TreeSet;
-import org.apache.logging.log4j.Logger;
+
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
@@ -19,15 +20,15 @@ public class ComputerPersistor implements Persistor<Computer> {
 	private static Logger logger = LogManager.getLogger(ComputerPersistor.class);
 	
 	private static final String 
-					FIND_ALL_QUERY_LAZY="SELECT id, name, introduced, discontinued, company_id FROM computer",
-					FIND_ALL_QUERY="SELECT computer.id, computer.name, introduced, discontinued, company_id,company.name FROM computer left join company on computer.company_id=company.id",
-					FIND_ALL_QUERY_LIMIT="SELECT computer.id, computer.name, introduced, discontinued, company_id,company.name FROM computer left join company on computer.company_id=company.id LIMIT ?,?",
-					FIND_ONE_QUERY="SELECT computer.id, computer.name, introduced, discontinued, company_id,company.name FROM computer left join company on computer.company_id=company.id WHERE computer.id = ? LIMIT 1",
-					FIND_ONE_QUERY_LAZY="SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ? LIMIT 1",
-					CREATE_QUERY ="INSERT INTO computer(`id`,`name`,`introduced`,`discontinued`,`company_id`) VALUES(?,?,?,?,?)",
-					DELETE_QUERY="DELETE FROM computer where computer.id = ?",
-					UPDATE_QUERY="UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id  = ? WHERE id = ?",
-					COUNT_QUERY="SELECT COUNT(*)  FROM computer"
+					FIND_ALL_QUERY_LAZY="SELECT `id`, `name`, `introduced`, `discontinued`, company_id FROM `computer-database-db`.computer",
+					FIND_ALL_QUERY="SELECT `computer`.`id`, `computer`.`name`, `introduced`, `discontinued`, `company_id`,`company`.`name` FROM `computer-database-db`.`computer` left join `computer-database-db`.`company` on `computer`.`company_id`=`company`.`id`",
+					FIND_ALL_QUERY_LIMIT="SELECT `computer`.`id`, `computer`.`name`, `introduced`, `discontinued`, `company_id`,`company`.`name` FROM `computer-database-db`.`computer` left join `computer-database-db`.`company` on `computer`.`company_id`=`company`.`id` LIMIT ?,?",
+					FIND_ONE_QUERY="SELECT `computer`.`id`, `computer`.`name`, `introduced`, `discontinued`, `company_id`,`company`.`name` FROM `computer-database-db`.`computer` left join `computer-database-db`.`company` on `computer`.`company_id`=`company`.`id` WHERE `computer`.`id` = ? LIMIT 1",
+					FIND_ONE_QUERY_LAZY="SELECT `id`, `name`, `introduced`, `discontinued`, `company_id` FROM `computer-database-db`.`computer` WHERE `id` = ? LIMIT 1",
+					CREATE_QUERY ="INSERT INTO `computer-database-db`.`computer`(`id`,`name`,`introduced`,`discontinued`,`company_id`) VALUES(?,?,?,?,?)",
+					DELETE_QUERY="DELETE FROM `computer-database-db`.`computer` where `computer`.`id` = ?",
+					UPDATE_QUERY="UPDATE `computer-database-db`.`computer` SET `name` = ?, `introduced` = ?, `discontinued` = ?, `company_id`  = ? WHERE `id` = ?",
+					COUNT_QUERY="SELECT COUNT(*)  FROM `computer-database-db`.`computer`"
 					;
 	
 	private final Database database;
@@ -47,7 +48,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 				computers.add(convertResultLine(rset));
 			}			
 		} catch (SQLException e) {
-			logger.error("SQL Exception while calling find-all-query",e);
+			logger.error("SQL Exception while calling FIND_ALL_QUERY",e);
 		}		
 		return computers;
 	}
@@ -64,7 +65,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 				computers.add(convertResultLine(rset));
 			}			
 		} catch (SQLException e) {
-			logger.error("SQL Exception while calling find-all-query",e);
+			logger.error("SQL Exception while calling FIND_ALL_QUERY_WITH_LIMIT",e);
 		}		
 		return computers;
 	}
@@ -78,10 +79,14 @@ public class ComputerPersistor implements Persistor<Computer> {
 			stmt.setString(2, computer.getName());
 			stmt.setDate(3, (computer.getIntroduced()==null)? null : new java.sql.Date(computer.getIntroduced().getTime()));
 			stmt.setDate(4, (computer.getDiscontinued()==null)? null :new java.sql.Date(computer.getDiscontinued().getTime()));
-			stmt.setLong(5, computer.getCompany().getId());
+			if(computer.getCompany()!=null && computer.getCompany().getId()!=null) {
+				stmt.setLong(5,computer.getCompany().getId());
+			}else {
+				stmt.setNull(5,java.sql.Types.DOUBLE);
+			}			
 			stmt.execute();						
 		} catch (SQLException e) {
-			logger.error("SQL Exception while calling find-all-query",e);
+			logger.error("SQL Exception while calling CREATE_QUERY",e);
 		}	
 	}
 	@Override
@@ -92,7 +97,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 			stmt.setLong(1,computer.getId());
 			stmt.execute();			
 		} catch (SQLException e) {
-			logger.error("SQL Exception while calling find-all-query",e);
+			logger.error("SQL Exception while calling DELETE_QUERY",e);
 		}
 	}
 	@Override
@@ -103,11 +108,15 @@ public class ComputerPersistor implements Persistor<Computer> {
 			stmt.setString(1, computer.getName());
 			stmt.setDate(2, (computer.getIntroduced()==null)? null : new java.sql.Date(computer.getIntroduced().getTime()));
 			stmt.setDate(3, (computer.getDiscontinued()==null)? null :new java.sql.Date(computer.getDiscontinued().getTime()));
-			stmt.setLong(4, computer.getCompany().getId());
+			if(computer.getCompany()!=null && computer.getCompany().getId()!=null) {
+				stmt.setLong(4,computer.getCompany().getId());
+			}else {
+				stmt.setNull(4, java.sql.Types.DOUBLE);
+			}
 			stmt.setLong(5, computer.getId());
 			stmt.execute();						
 		} catch (SQLException e) {
-			logger.error("SQL Exception while calling find-all-query",e);
+			logger.error("SQL Exception while calling UPDATE_QUERY",e);
 		}	
 	}
 	@Override
@@ -122,7 +131,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 				computer = convertResultLine(rset);
 			}			
 		} catch (SQLException e) {
-			logger.error("SQL Exception while calling find-all-query",e);
+			logger.error("SQL Exception while calling FIND_ONE_QUERY",e);
 		}		
 		return computer;
 	}
@@ -135,7 +144,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 			count = rset.next()  ? rset.getLong(1) : 0L;						
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			logger.error("SQL Exception while calling find-all-query",e);
+			logger.error("SQL Exception while calling COUNT_QUERY",e);
 		}		
 		return count;
 	}
@@ -150,8 +159,10 @@ public class ComputerPersistor implements Persistor<Computer> {
 		Company company = new Company();		
 		company.setId(rset.getLong(5));
 		if(!lazyStrategy)
-			company.setName((company.getId()==0L) ? "PAS DE COMPANY" : rset.getString(6));
-		computer.setCompany(company);
+			company.setName(rset.getString(6));
+		if(company.getId()!=0)
+			computer.setCompany(company);
+		
 		return computer;
 	}
 	
