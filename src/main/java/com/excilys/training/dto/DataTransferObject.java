@@ -1,4 +1,4 @@
-package com.excilys.training.mapper.dto;
+package com.excilys.training.dto;
 
 public interface DataTransferObject <T> extends Comparable<DataTransferObject <T>>{
 

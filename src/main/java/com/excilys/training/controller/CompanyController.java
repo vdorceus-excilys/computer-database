@@ -3,12 +3,12 @@ package com.excilys.training.controller;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.dto.DefaultCompanySkin;
 import com.excilys.training.mapper.Mapper;
-import com.excilys.training.mapper.dto.DataTransferObject;
-import com.excilys.training.mapper.dto.DefaultCompanySkin;
 import com.excilys.training.model.Company;
-import com.excilys.training.model.validator.Validator;
 import com.excilys.training.service.Service;
+import com.excilys.training.validator.Validator;
 
 public class CompanyController implements Controller<Company> {
 	

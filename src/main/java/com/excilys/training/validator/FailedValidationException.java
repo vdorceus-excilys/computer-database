@@ -1,4 +1,4 @@
-package com.excilys.training.model.validator;
+package com.excilys.training.validator;
 
 public class FailedValidationException extends RuntimeException{
 

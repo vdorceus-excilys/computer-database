@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
-import com.excilys.training.mapper.dto.DefaultComputerSkin;
+import com.excilys.training.dto.DefaultComputerSkin;
 
 /**
  * Servlet implementation class AddComputer

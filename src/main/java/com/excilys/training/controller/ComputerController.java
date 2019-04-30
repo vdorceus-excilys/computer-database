@@ -5,12 +5,12 @@ import java.util.TreeSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.mapper.Mapper;
-import com.excilys.training.mapper.dto.DataTransferObject;
-import com.excilys.training.mapper.dto.DefaultComputerSkin;
 import com.excilys.training.model.Computer;
-import com.excilys.training.model.validator.Validator;
 import com.excilys.training.service.Service;
+import com.excilys.training.validator.Validator;
 
 public class ComputerController implements Controller<Computer>{
 	

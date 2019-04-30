@@ -1,6 +1,8 @@
-package com.excilys.training.model.validator;
+package com.excilys.training.validator.model;
 
 import com.excilys.training.model.Company;
+import com.excilys.training.validator.FailedValidationException;
+import com.excilys.training.validator.Validator;
 
 public class CompanyDefaultValidator implements Validator<Company>{
 	

@@ -1,12 +1,14 @@
 package com.excilys.training.service;
 
+import java.text.ParseException;
 import java.util.Set;
 
-import com.excilys.training.model.validator.FailedValidationException;
-import com.excilys.training.model.validator.Validator;
-import com.excilys.training.persistance.Persistor;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.excilys.training.persistance.Persistor;
+import com.excilys.training.validator.FailedValidationException;
+import com.excilys.training.validator.Validator;
 
 public abstract class GenericService<T> implements Service<T> {
 	protected Validator<T> validator;
@@ -22,7 +24,14 @@ public abstract class GenericService<T> implements Service<T> {
 	}
 	@Override
 	public void validate (T model) throws FailedValidationException{
-		this.validator.validate(model);
+		try {
+			this.validator.validate(model);
+		}
+		catch(ParseException exp) {
+			logger.error("EXCEPTION WHILE PARSING MODEL WITH VALIDATOR",exp);
+			throw new FailedValidationException();
+		}
+		
 	}
 	@Override
 	public Set<T> listAll(){

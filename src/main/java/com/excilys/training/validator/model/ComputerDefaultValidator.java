@@ -1,9 +1,12 @@
-package com.excilys.training.model.validator;
+package com.excilys.training.validator.model;
 
 import java.text.ParseException;
 import java.util.Date;
 
 import com.excilys.training.model.Computer;
+import com.excilys.training.validator.FailedValidationException;
+import com.excilys.training.validator.Validator;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -28,7 +31,7 @@ public class ComputerDefaultValidator implements Validator<Computer> {
 		Boolean valid = false;
 		try {
 			valid = (computer!=null)
-				&& (computer.getId()>0)
+				&& (computer.getId()==null || computer.getId()>0)
 				&& (computer.getName().length()>2)
 				&& (computer.getIntroduced()==null || (
 						computer.getIntroduced().compareTo(MINIMUM_DATE_LIMIT)>0 &&

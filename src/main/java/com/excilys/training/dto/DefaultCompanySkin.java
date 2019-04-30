@@ -1,4 +1,4 @@
-package com.excilys.training.mapper.dto;
+package com.excilys.training.dto;
 
 import com.excilys.training.model.Company;
 

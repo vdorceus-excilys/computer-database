@@ -22,13 +22,13 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import com.excilys.training.controller.ComputerController;
+import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.mapper.DefaultComputerMapper;
-import com.excilys.training.mapper.dto.DataTransferObject;
-import com.excilys.training.mapper.dto.DefaultComputerSkin;
 import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
-import com.excilys.training.model.validator.ComputerDefaultValidator;
 import com.excilys.training.service.ComputerService;
+import com.excilys.training.validator.model.ComputerDefaultValidator;
 
 public class ComputerControllerTest {
 	

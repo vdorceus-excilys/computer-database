@@ -1,7 +1,7 @@
 package com.excilys.training.mapper;
 
-import com.excilys.training.mapper.dto.DataTransferObject;
-import com.excilys.training.mapper.dto.DefaultCompanySkin;
+import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.dto.DefaultCompanySkin;
 import com.excilys.training.model.Company;
 
 public class DefaultCompanyMapper implements Mapper<Company,DataTransferObject<Company>> {

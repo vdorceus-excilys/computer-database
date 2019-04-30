@@ -1,4 +1,4 @@
-package com.excilys.training.mapper.dto;
+package com.excilys.training.dto;
 import com.excilys.training.model.Computer;
 
 public class DefaultComputerSkin implements DataTransferObject<Computer>{
@@ -57,11 +57,23 @@ public class DefaultComputerSkin implements DataTransferObject<Computer>{
 				(o!=null)&&
 				(this.getClass()==o.getClass())&&
 				(this.id.equals(((DefaultComputerSkin)o).getId()))&&
-				(this.name.equals(((DefaultComputerSkin)o).getName()))&&
-				(this.introduced.equals(((DefaultComputerSkin)o).getIntroduced()))&&
-				(this.discontinued.equals(((DefaultComputerSkin)o).getDiscontinued()))&&
-				(this.company.equals(((DefaultComputerSkin)o).getCompany()))
+				(this.name.equals(((DefaultComputerSkin)o).getName()))
 			;
+		//introduced
+				if(this.introduced!=null)
+					eq = eq && (this.introduced.equals(((DefaultComputerSkin)o).getIntroduced()));
+				else if(((DefaultComputerSkin)o).getIntroduced()!=null )
+					eq=false;
+				//discontinued
+				if(this.discontinued!=null)
+					eq = eq && (this.discontinued.equals(((DefaultComputerSkin)o).getDiscontinued()));
+				else if(((DefaultComputerSkin)o).getDiscontinued()!=null )
+					eq=false;
+				//company
+				if(this.company!=null)
+					eq = eq && (this.company.equals(((DefaultComputerSkin)o).getCompany()));
+				else if(((DefaultComputerSkin)o).getCompany()!=null )
+					eq=false;
 		return eq;
 	}
 	

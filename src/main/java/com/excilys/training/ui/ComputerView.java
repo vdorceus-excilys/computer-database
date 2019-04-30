@@ -8,12 +8,10 @@ import org.apache.logging.log4j.Logger;
 
 import com.excilys.training.controller.ComputerController;
 import com.excilys.training.controller.Controller;
+import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.mapper.DefaultComputerMapper;
-import com.excilys.training.mapper.dto.DataTransferObject;
-import com.excilys.training.mapper.dto.DefaultComputerSkin;
 import com.excilys.training.model.Computer;
-import com.excilys.training.model.validator.CompanyDefaultValidator;
-import com.excilys.training.model.validator.ComputerDefaultValidator;
 import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.persistance.ComputerPersistor;
 import com.excilys.training.persistance.db.Database;
@@ -21,6 +19,8 @@ import com.excilys.training.persistance.db.Mysql;
 import com.excilys.training.service.CompanyService;
 import com.excilys.training.service.ComputerService;
 import com.excilys.training.util.ConfigurationProperties;
+import com.excilys.training.validator.model.CompanyDefaultValidator;
+import com.excilys.training.validator.model.ComputerDefaultValidator;
 
 public class ComputerView implements View<Computer>{
 	

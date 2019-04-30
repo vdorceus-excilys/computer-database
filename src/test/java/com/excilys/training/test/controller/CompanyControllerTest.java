@@ -22,16 +22,16 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import com.excilys.training.controller.CompanyController;
+import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.dto.DefaultCompanySkin;
+import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.mapper.DefaultCompanyMapper;
 import com.excilys.training.mapper.DefaultComputerMapper;
-import com.excilys.training.mapper.dto.DataTransferObject;
-import com.excilys.training.mapper.dto.DefaultCompanySkin;
-import com.excilys.training.mapper.dto.DefaultComputerSkin;
 import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
-import com.excilys.training.model.validator.CompanyDefaultValidator;
-import com.excilys.training.model.validator.ComputerDefaultValidator;
 import com.excilys.training.service.CompanyService;
+import com.excilys.training.validator.model.CompanyDefaultValidator;
+import com.excilys.training.validator.model.ComputerDefaultValidator;
 
 public class CompanyControllerTest {
 

@@ -2,7 +2,7 @@ package com.excilys.training.controller;
 
 import java.util.Set;
 
-import com.excilys.training.mapper.dto.DataTransferObject;
+import com.excilys.training.dto.DataTransferObject;
 
 public interface Controller<T> {
 	

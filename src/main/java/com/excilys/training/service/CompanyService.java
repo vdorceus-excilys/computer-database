@@ -4,11 +4,11 @@ package com.excilys.training.service;
 import java.util.Set;
 
 import com.excilys.training.model.Company;
-import com.excilys.training.model.validator.Validator;
 import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.persistance.db.Database;
 import com.excilys.training.persistance.db.Mysql;
 import com.excilys.training.util.ConfigurationProperties;
+import com.excilys.training.validator.Validator;
 
 
 public class CompanyService extends GenericService<Company>{

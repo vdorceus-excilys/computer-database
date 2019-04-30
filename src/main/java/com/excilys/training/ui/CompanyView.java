@@ -8,16 +8,16 @@ import org.apache.logging.log4j.Logger;
 
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.Controller;
+import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.dto.DefaultCompanySkin;
 import com.excilys.training.mapper.DefaultCompanyMapper;
-import com.excilys.training.mapper.dto.DataTransferObject;
-import com.excilys.training.mapper.dto.DefaultCompanySkin;
 import com.excilys.training.model.Company;
-import com.excilys.training.model.validator.CompanyDefaultValidator;
 import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.persistance.db.Database;
 import com.excilys.training.persistance.db.Mysql;
 import com.excilys.training.service.CompanyService;
 import com.excilys.training.util.ConfigurationProperties;
+import com.excilys.training.validator.model.CompanyDefaultValidator;
 
 public class CompanyView implements View<Company> {
 	
