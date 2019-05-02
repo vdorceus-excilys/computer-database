@@ -1,6 +1,7 @@
 package com.excilys.training.validator.dto;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +18,7 @@ public class ComputerDTOValidator implements Validator<DataTransferObject<Comput
 	private static Date MINIMUM_DATE_LIMIT=null;
 	private static Date MAXIMUM_DATE_LIMIT=null;	
 	private static Logger logger = LogManager.getLogger(ComputerDTOValidator.class);
+	private static SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
 	static {
 		try{

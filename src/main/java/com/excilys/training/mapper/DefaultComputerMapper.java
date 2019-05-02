@@ -3,6 +3,9 @@ package com.excilys.training.mapper;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.excilys.training.dto.DataTransferObject;
 import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.model.Company;
@@ -12,6 +15,7 @@ import com.excilys.training.service.Service;
 
 public class DefaultComputerMapper implements Mapper<Computer,DataTransferObject<Computer>> {
 	
+	private static Logger logger = LogManager.getLogger(DefaultComputerMapper.class);
 	private SimpleDateFormat sdf;
 	private Service<Company> companyService;
 	
@@ -34,7 +38,7 @@ public class DefaultComputerMapper implements Mapper<Computer,DataTransferObject
 			computer.setIntroduced((a==null || a.isEmpty())? null : sdf.parse(a));
 			computer.setDiscontinued((b==null ||a.isEmpty())? null : sdf.parse(b));
 		}catch(ParseException exp) {
-			System.err.println(exp.getMessage());
+			logger.error("exception parsing date",exp);			
 		}
 		computer.setCompany(companyService.findByAttribut("NAME",pojo.getCompany()));
 		return computer;

@@ -9,8 +9,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
-import com.excilys.training.mapper.DefaultCompanyMapper;
-import com.excilys.training.mapper.DefaultComputerMapper;
+import com.excilys.training.mapper.WebCompanyMapper;
+import com.excilys.training.mapper.WebComputerMapper;
 import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.persistance.ComputerPersistor;
 import com.excilys.training.persistance.db.Database;
@@ -57,8 +57,8 @@ public class WebController {
 		}
 		 ComputerService computerService = ComputerService.getInstance(computerPersistor,new ComputerDefaultValidator());
 		 CompanyService companyService = CompanyService.getInstance(companyPersistor, new CompanyDefaultValidator());
-		 computerController = ComputerController.getInstance(computerService,new DefaultComputerMapper(companyService));
-		 companyController = CompanyController.getInstance(companyService, new DefaultCompanyMapper());
+		 computerController = ComputerController.getInstance(computerService,new WebComputerMapper(companyService));
+		 companyController = CompanyController.getInstance(companyService, new WebCompanyMapper());
 		
 	}
 	
