@@ -4,6 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.excilys.training</groupId>
   <artifactId>computer-database</artifactId>
+  <packaging>war</packaging>
   <version>1</version> 
 
     <properties>
@@ -11,58 +12,68 @@
         <java.version>1.8</java.version>
 	<maven.compiler.source>1.8</maven.compiler.source>
 	<maven.compiler.target>1.8</maven.compiler.target>
+	<junit.version>4.11</junit.version>
+	<mysql-connector-java.version>5.1.47</mysql-connector-java.version>
+	<mockito-core.version>2.27.0</mockito-core.version>
+	<log4j-api.version>2.7</log4j-api.version>
+	<log4j-core.version>2.7</log4j-core.version>
+	<log4j-slf4j-impl.version>2.7</log4j-slf4j-impl.version>
+	<h2.version>1.4.199</h2.version>
+	<jstl.version>1.2</jstl.version>
+	<selenium-java.version>3.141.59</selenium-java.version>
+	
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
 		    <groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
-		    <version>5.1.47</version>
+		    <version>${mysql-connector-java}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.mockito</groupId>
 		    <artifactId>mockito-core</artifactId>
-		    <version>2.27.0</version>
+		    <version>${mockito-core}</version>
 		    <scope>test</scope>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-api</artifactId>
-		    <version>2.7</version>
+		    <version>${log4j-api}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-core</artifactId>
-		    <version>2.7</version>
+		    <version>${log4j-core}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-slf4j-impl</artifactId>
-		    <version>2.7</version>
+		    <version>${log4j-sl4j-impl}</version>
 		</dependency>			
 		<dependency>
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
-		    <version>1.4.199</version>
+		    <version>${h2}</version>
 		    <scope>test</scope>
 		</dependency>
 		
 		<dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>jstl</artifactId>
-		    <version>1.2</version>
+		    <version>${jstl}</version>
 		</dependency>
 		
 		<dependency>
 		    <groupId>org.seleniumhq.selenium</groupId>
 		    <artifactId>selenium-java</artifactId>
-		    <version>3.141.59</version>
+		    <version>${selenium-java}</version>
 		</dependency>
 
 		
