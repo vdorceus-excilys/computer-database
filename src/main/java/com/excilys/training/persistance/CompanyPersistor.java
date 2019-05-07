@@ -22,6 +22,7 @@ public class CompanyPersistor implements Persistor<Company>{
 					FIND_ONE_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1",
 					CREATE_QUERY ="INSERT INTO `computer-database-db`.`company`(`id`,`name`) VALUES(?,?)",
 					DELETE_QUERY="DELETE FROM `computer-database-db`.`company` where `id` = ?",
+					DELETE_COMPUTER_WHERE_QUERY="DELETE FROM `computer-database-db`.`computer` where `company_id` = ?",
 					UPDATE_QUERY="UPDATE `computer-database-db`.`company` SET `name` = ? WHERE `id` = ?",
 					COUNT_QUERY="SELECT COUNT(*)  FROM `computer-database-db`.`company`"
 					;
@@ -84,10 +85,16 @@ public class CompanyPersistor implements Persistor<Company>{
 	@Override
 	public void deleteQuery(Company company) {
 		try(Connection connection = database.getConnection()){
-			String sqlQuery = DELETE_QUERY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setLong(1,company.getId());
-			stmt.execute();			
+			String firstQuery = DELETE_COMPUTER_WHERE_QUERY;
+			String secondQuery = DELETE_QUERY;
+			connection.setAutoCommit(false);
+			PreparedStatement firstStmt = connection.prepareStatement(firstQuery);
+			PreparedStatement secondStmt = connection.prepareStatement(secondQuery);
+			firstStmt.setLong(1,company.getId());
+			secondStmt.setLong(1,company.getId());
+			firstStmt.execute();
+			secondStmt.execute();	
+			connection.commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
