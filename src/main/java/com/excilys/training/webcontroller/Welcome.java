@@ -46,6 +46,7 @@ public class Welcome extends HttpServlet {
 		request.setAttribute("lang",WebController.getInstance().language().get("fr"));
 		request.setAttribute("nbPages",nbPages);
 		request.setAttribute("computers", controller.list(--currentPage*limit,limit));
+		request.setAttribute("count", controller.count());
 		request.getRequestDispatcher("WEB-INF/list-computer.jsp").forward(request,response);
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

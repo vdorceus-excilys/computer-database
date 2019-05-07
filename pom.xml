@@ -21,6 +21,7 @@
 	<h2.version>1.4.199</h2.version>
 	<jstl.version>1.2</jstl.version>
 	<selenium-java.version>3.141.59</selenium-java.version>
+	<HikariCP.version>2.6.1</HikariCP.version>
 	
     </properties>
 
@@ -34,46 +35,52 @@
 		<dependency>
 		    <groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
-		    <version>${mysql-connector-java}</version>
+		    <version>${mysql-connector-java.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.mockito</groupId>
 		    <artifactId>mockito-core</artifactId>
-		    <version>${mockito-core}</version>
+		    <version>${mockito-core.version}</version>
 		    <scope>test</scope>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-api</artifactId>
-		    <version>${log4j-api}</version>
+		    <version>${log4j-api.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-core</artifactId>
-		    <version>${log4j-core}</version>
+		    <version>${log4j-core.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.apache.logging.log4j</groupId>
 		    <artifactId>log4j-slf4j-impl</artifactId>
-		    <version>${log4j-sl4j-impl}</version>
+		    <version>${log4j-slf4j-impl.version}</version>
 		</dependency>			
 		<dependency>
 		    <groupId>com.h2database</groupId>
 		    <artifactId>h2</artifactId>
-		    <version>${h2}</version>
+		    <version>${h2.version}</version>
 		    <scope>test</scope>
 		</dependency>
 		
 		<dependency>
 		    <groupId>javax.servlet</groupId>
 		    <artifactId>jstl</artifactId>
-		    <version>${jstl}</version>
+		    <version>${jstl.version}</version>
 		</dependency>
 		
 		<dependency>
 		    <groupId>org.seleniumhq.selenium</groupId>
 		    <artifactId>selenium-java</artifactId>
-		    <version>${selenium-java}</version>
+		    <version>${selenium-java.version}</version>
+		</dependency>
+		
+		<dependency>
+		<groupId>com.zaxxer</groupId>
+		<artifactId>HikariCP</artifactId>
+		<version>${HikariCP.version}</version>
 		</dependency>
 
 		

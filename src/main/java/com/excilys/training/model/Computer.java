@@ -2,12 +2,20 @@ package com.excilys.training.model;
 
 import java.util.Date;
 
+import com.excilys.training.validator.annotation.Constraint;
+
 public class Computer implements Comparable<Computer> {
-	Long id;
-	String name;
-	Date introduced;
-	Date discontinued;
-	Company company;
+	
+	@Constraint(clazz="java.lang.Long", minValue=1L,nullable=false)
+	private Long id;
+	@Constraint(clazz="java.lang.String",minSize=3,maxSize=25,nullable=false,blank=false)
+	private String name;
+	@Constraint(clazz="java.util.Date",ref="introduced",minDate="1-01-1970",maxDate="now")
+	private Date introduced;
+	@Constraint(clazz="java.util.Date",greaterThan="introduced",maxDate="now")
+	private Date discontinued;
+	private Company company;
+	
 	public Long getId() {
 		return id;
 	}
@@ -75,6 +83,8 @@ public class Computer implements Comparable<Computer> {
 		
 		return "ID="+getId()+" NAME="+getName()+" INTRO="+getIntroduced()+" DISC="+getDiscontinued()+" COMPANY="+getCompany();
 	}
+	
+	
 	
 	
 }

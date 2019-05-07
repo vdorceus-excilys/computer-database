@@ -1,8 +1,13 @@
 package com.excilys.training.model;
 
+import com.excilys.training.validator.annotation.Constraint;
+
 public class Company implements Comparable<Company> {
-	Long id;
-	String name;
+	@Constraint(clazz="java.lang.Long", minValue=1L,nullable=false)
+	private Long id;
+	@Constraint(clazz="java.lang.String",minSize=3,maxSize=25,nullable=false,blank=false)
+	private String name;
+	
 	public Long getId() {
 		return id;
 	}
