@@ -3,7 +3,7 @@ package com.excilys.training.dto;
 import com.excilys.training.model.Company;
 
 public class DefaultCompanySkin implements DataTransferObject<Company> {
-	private String id, name;
+	private String id ="", name="";
 
 	public String getId() {
 		return id;

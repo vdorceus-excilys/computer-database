@@ -2,7 +2,7 @@ package com.excilys.training.dto;
 import com.excilys.training.model.Computer;
 
 public class DefaultComputerSkin implements DataTransferObject<Computer>{
-	String id, name, introduced, discontinued, company;
+	String id="", name="", introduced="", discontinued="", company="";
 
 	public String getId() {
 		return id;
@@ -75,6 +75,10 @@ public class DefaultComputerSkin implements DataTransferObject<Computer>{
 				else if(((DefaultComputerSkin)o).getCompany()!=null )
 					eq=false;
 		return eq;
+	}
+	@Override
+	public String toString() {
+		return id+" "+name;
 	}
 	
 }
