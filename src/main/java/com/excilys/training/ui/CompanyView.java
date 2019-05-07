@@ -45,8 +45,8 @@ public class CompanyView implements View<Company> {
 		StringBuffer q = new StringBuffer();
 		System.out.println("FABRICANT: ");
 		q.append("Tapez  [1] pour lister\n");
-		q.append("Tapez  [2] pour ajouter un nouveau\n");
-		q.append("Tapez  [3] pour supprimer un ordinateur\n");
+		q.append("Tapez  [2] pour ajouter un nouveau fabricant\n");
+		q.append("Tapez  [3] pour supprimer un fabricant\n");
 		q.append("Tapez  [4] pour voir les détails d'un fabricant\n");
 		q.append("Tapez  [q] pour quitter le contexte actuel\n");
 		System.out.println(q);
