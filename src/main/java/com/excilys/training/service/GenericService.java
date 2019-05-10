@@ -7,8 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.excilys.training.persistance.Persistor;
-import com.excilys.training.validator.FailedValidationException;
 import com.excilys.training.validator.Validator;
+import com.excilys.training.validator.exception.FailedValidationException;
 
 public abstract class GenericService<T> implements Service<T> {
 	protected Validator<T> validator;

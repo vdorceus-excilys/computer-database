@@ -5,10 +5,10 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import com.excilys.training.validator.Constraint;
 import com.excilys.training.validator.ConstraintValidator;
-import com.excilys.training.validator.FailedValidationException;
 import com.excilys.training.validator.Validator;
-import com.excilys.training.validator.annotation.Constraint;
+import com.excilys.training.validator.exception.FailedValidationException;
 
 public class ConstraintValidationTest {
 	

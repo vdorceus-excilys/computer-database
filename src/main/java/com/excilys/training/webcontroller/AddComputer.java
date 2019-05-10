@@ -15,8 +15,8 @@ import org.apache.logging.log4j.Logger;
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
 import com.excilys.training.dto.DefaultComputerSkin;
-import com.excilys.training.validator.FailedValidationException;
-import com.excilys.training.validator.dto.ComputerDTOValidator;
+import com.excilys.training.validator.ConstraintValidator;
+import com.excilys.training.validator.exception.FailedValidationException;
 
 /**
  * Servlet implementation class AddComputer
@@ -57,7 +57,8 @@ public class AddComputer extends HttpServlet {
 		String introduced = request.getParameter("newIntroducedDate");
 		String discontinued = request.getParameter("newDiscontinuedDate");
 		String company = request.getParameter("newComputerCompanyName");
-		//System.out.println(name +" // "+ introduced +"//"+discontinued+"//"+company);
+		System.out.println(name +" // "+ introduced +"//"+discontinued+"//"+company);
+		
 		DefaultComputerSkin computer = new DefaultComputerSkin();
 		computer.setId("-100000");
 		computer.setName(name);
@@ -65,7 +66,7 @@ public class AddComputer extends HttpServlet {
 		computer.setDiscontinued(discontinued);
 		computer.setCompany(company);
 		try {
-			new ComputerDTOValidator().validate(computer);
+			new ConstraintValidator().validate(computer);
 			computerController.create(computer);
 		}
 		catch(FailedValidationException exp) {

@@ -4,8 +4,8 @@ import java.text.ParseException;
 import java.util.Date;
 
 import com.excilys.training.model.Computer;
-import com.excilys.training.validator.FailedValidationException;
 import com.excilys.training.validator.Validator;
+import com.excilys.training.validator.exception.FailedValidationException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;

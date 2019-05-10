@@ -1,8 +1,18 @@
 package com.excilys.training.dto;
 import com.excilys.training.model.Computer;
+import com.excilys.training.validator.Constraint;
 
 public class DefaultComputerSkin implements DataTransferObject<Computer>{
-	String id="", name="", introduced="", discontinued="", company="";
+	
+	String id="";
+	@Constraint(nullable=false,blank=false)
+	String name="";
+	@Constraint(minSize=10,maxSize=10)
+	String introduced="";
+	@Constraint(minSize=10,maxSize=10)
+	String discontinued="";
+	@Constraint(nullable=false,blank=false)
+	String company="";
 
 	public String getId() {
 		return id;

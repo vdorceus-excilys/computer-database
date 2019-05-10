@@ -1,9 +1,12 @@
 package com.excilys.training.dto;
 
 import com.excilys.training.model.Company;
+import com.excilys.training.validator.Constraint;
 
 public class DefaultCompanySkin implements DataTransferObject<Company> {
-	private String id ="", name="";
+	private String id ="";
+	@Constraint(nullable=false,blank=false)
+	private String name="";
 
 	public String getId() {
 		return id;

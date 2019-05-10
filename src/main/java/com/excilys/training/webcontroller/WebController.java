@@ -18,8 +18,7 @@ import com.excilys.training.persistance.db.Mysql;
 import com.excilys.training.service.CompanyService;
 import com.excilys.training.service.ComputerService;
 import com.excilys.training.util.ConfigurationProperties;
-import com.excilys.training.validator.model.CompanyDefaultValidator;
-import com.excilys.training.validator.model.ComputerDefaultValidator;
+import com.excilys.training.validator.ConstraintValidator;
 
 public class WebController {
 	
@@ -55,8 +54,8 @@ public class WebController {
 		catch(IOException exp) {
 			logger.error("Error importing configuration",exp);
 		}
-		 ComputerService computerService = ComputerService.getInstance(computerPersistor,new ComputerDefaultValidator());
-		 CompanyService companyService = CompanyService.getInstance(companyPersistor, new CompanyDefaultValidator());
+		 ComputerService computerService = ComputerService.getInstance(computerPersistor,new ConstraintValidator());
+		 CompanyService companyService = CompanyService.getInstance(companyPersistor, new ConstraintValidator());
 		 computerController = ComputerController.getInstance(computerService,new WebComputerMapper(companyService));
 		 companyController = CompanyController.getInstance(companyService, new WebCompanyMapper());
 		

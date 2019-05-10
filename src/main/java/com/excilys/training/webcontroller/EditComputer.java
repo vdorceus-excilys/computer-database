@@ -15,8 +15,8 @@ import org.apache.logging.log4j.Logger;
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
 import com.excilys.training.dto.DefaultComputerSkin;
-import com.excilys.training.validator.FailedValidationException;
 import com.excilys.training.validator.dto.ComputerDTOValidator;
+import com.excilys.training.validator.exception.FailedValidationException;
 
 /**
  * Servlet implementation class EditComputer

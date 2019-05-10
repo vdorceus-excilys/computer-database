@@ -17,7 +17,7 @@ import com.excilys.training.persistance.db.Database;
 import com.excilys.training.persistance.db.Mysql;
 import com.excilys.training.service.CompanyService;
 import com.excilys.training.util.ConfigurationProperties;
-import com.excilys.training.validator.model.CompanyDefaultValidator;
+import com.excilys.training.validator.ConstraintValidator;
 
 public class CompanyView implements View<Company> {
 	
@@ -36,7 +36,7 @@ public class CompanyView implements View<Company> {
 			//log service exception
 			logger.error("ERROR WHILE TRYING TO SET COMPANY CONFIGURATION WITH PROPERTIES",exp);
 		}
-		CompanyService service = CompanyService.getInstance(persistor,new CompanyDefaultValidator());
+		CompanyService service = CompanyService.getInstance(persistor,new ConstraintValidator());
 		controller = CompanyController.getInstance(service,new DefaultCompanyMapper());
 	}
 	

@@ -2,8 +2,8 @@ package com.excilys.training.service;
 
 import java.util.Set;
 
-import com.excilys.training.validator.FailedValidationException;
 import com.excilys.training.validator.Validator;
+import com.excilys.training.validator.exception.FailedValidationException;
 
 public interface Service <T> {
 	

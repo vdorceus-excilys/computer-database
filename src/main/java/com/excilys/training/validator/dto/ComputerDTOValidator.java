@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 import com.excilys.training.dto.DataTransferObject;
 import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.model.Computer;
-import com.excilys.training.validator.FailedValidationException;
 import com.excilys.training.validator.Validator;
+import com.excilys.training.validator.exception.FailedValidationException;
 
 public class ComputerDTOValidator implements Validator<DataTransferObject<Computer>> {
 	

@@ -19,8 +19,7 @@ import com.excilys.training.persistance.db.Mysql;
 import com.excilys.training.service.CompanyService;
 import com.excilys.training.service.ComputerService;
 import com.excilys.training.util.ConfigurationProperties;
-import com.excilys.training.validator.model.CompanyDefaultValidator;
-import com.excilys.training.validator.model.ComputerDefaultValidator;
+import com.excilys.training.validator.ConstraintValidator;
 
 public class ComputerView implements View<Computer>{
 	
@@ -42,8 +41,8 @@ public class ComputerView implements View<Computer>{
 			//log service exception
 			logger.error("ERROR WHILE TRYING TO SET COMPUTER CONFIGURATION WITH PROPERTIES",exp);
 		}
-		ComputerService serviceComputer = ComputerService.getInstance(computerPersistor,new ComputerDefaultValidator());
-		CompanyService serviceCompany = CompanyService.getInstance(companyPersistor, new CompanyDefaultValidator());
+		ComputerService serviceComputer = ComputerService.getInstance(computerPersistor,new ConstraintValidator());
+		CompanyService serviceCompany = CompanyService.getInstance(companyPersistor, new ConstraintValidator());
 		controller = ComputerController.getInstance(serviceComputer,new DefaultComputerMapper(serviceCompany));
 	}
 	

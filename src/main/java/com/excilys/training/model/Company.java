@@ -1,6 +1,6 @@
 package com.excilys.training.model;
 
-import com.excilys.training.validator.annotation.Constraint;
+import com.excilys.training.validator.Constraint;
 
 public class Company implements Comparable<Company> {
 	@Constraint(clazz="java.lang.Long", minValue=1L,nullable=false)

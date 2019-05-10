@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.excilys.training.model.Computer;
-import com.excilys.training.validator.FailedValidationException;
+import com.excilys.training.validator.exception.FailedValidationException;
 import com.excilys.training.validator.model.ComputerDefaultValidator;
 
 public class ComputerDefaultValidatorTest {
