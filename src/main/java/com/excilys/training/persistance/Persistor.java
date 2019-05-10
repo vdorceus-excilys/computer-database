@@ -14,5 +14,7 @@ public interface Persistor<T> {
 	T findOneQuery(Long id) throws Exception;
 	T convertResultLine(ResultSet s) throws SQLException;
 	void setLazyStrategy(Boolean b);
+	Set<T> findAllQueryOrdered(Long offset, Long limit, String att,Boolean asc);
+	Set<T> searchQuery(String search);
 
 }

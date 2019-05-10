@@ -75,8 +75,33 @@ public class ComputerController implements Controller<Computer>{
 		return cs;
 	}
 	@Override
+	public Set<DataTransferObject<Computer>> list(Long offset, Long limit, String orderBy, Boolean order) {
+		Set<DataTransferObject<Computer>> cs = new TreeSet<DataTransferObject<Computer>> ();
+		for(Computer c : service.orderedListAll(offset,limit,orderBy, order)) {
+			cs.add((DefaultComputerSkin) mapper.reverse(c));
+		}
+		return cs;
+	}
+	@Override
+	public Set<DataTransferObject<Computer>> list(String search) {
+		Set<DataTransferObject<Computer>> cs = new TreeSet<DataTransferObject<Computer>> ();
+		for(Computer c : service.listSearch(search)) {
+			cs.add((DefaultComputerSkin) mapper.reverse(c));
+		}
+		return cs;
+	}
+	
+	@Override
 	public Long count() {		
 		return service.count();
 	}
+
+
+	
+
+
+	
+
+	
 
 }

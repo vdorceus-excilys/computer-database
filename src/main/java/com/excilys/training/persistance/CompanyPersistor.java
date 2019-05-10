@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -17,7 +19,9 @@ public class CompanyPersistor implements Persistor<Company>{
 	private static final String 
 					FIND_ALL_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company`",
 					FIND_ALL_QUERY_LIMIT="SELECT `id`, `name` FROM `computer-database-db`.`company` LIMIT ?, ?",
+					FIND_ALL_QUERY_ORDERED="SELECT `id`, `name` FROM `computer-database-db`.`company` ORDER BY #columnOrder #directionOrder LIMIT ?, ?",
 					FIND_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company`",
+					SEARCH_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE `company`.`name` LIKE %?%",
 					FIND_ONE_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1",
 					FIND_ONE_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1",
 					CREATE_QUERY ="INSERT INTO `computer-database-db`.`company`(`id`,`name`) VALUES(?,?)",
@@ -26,6 +30,12 @@ public class CompanyPersistor implements Persistor<Company>{
 					UPDATE_QUERY="UPDATE `computer-database-db`.`company` SET `name` = ? WHERE `id` = ?",
 					COUNT_QUERY="SELECT COUNT(*)  FROM `computer-database-db`.`company`"
 					;
+	
+	static Map<String,String> accepted = new HashMap<>();
+	static {
+		accepted.put("id","`company`.`id`");
+		accepted.put("name","`company`.`name`");
+	}
 	
 	private final Database database;
 	private Boolean lazyStrategy;
@@ -68,6 +78,50 @@ public class CompanyPersistor implements Persistor<Company>{
 		}		
 		return companies;
 	}
+	@Override
+	public Set<Company> findAllQueryOrdered(Long offset, Long limit, String att, Boolean asc) {
+		if(!accepted.containsKey(att)) {
+			return findAllQuery(offset, limit);
+		}else {
+			Set<Company> companies = new TreeSet<Company>();
+			try(Connection connection = database.getConnection()){
+				String sqlQuery = FIND_ALL_QUERY_ORDERED;
+				sqlQuery = sqlQuery.replace("#columnOrder",accepted.get(att));
+				sqlQuery = sqlQuery.replace("#directionOrder",asc? "ASC" : "DESC");
+				PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+				//stmt.setString(1,accepted.get(att));
+				//stmt.setString(2, asc? "ASC" : "DESC");
+				stmt.setLong(3, offset);
+				stmt.setLong(4, limit);
+				ResultSet rset = stmt.executeQuery();
+				while (rset.next()) {				
+					companies.add(convertResultLine(rset));
+				}			
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+			return companies;
+		}
+	}
+	@Override
+	public Set<Company> searchQuery(String search) {
+		Set<Company> companies = new TreeSet<Company>();
+		try(Connection connection = database.getConnection()){
+			String sqlQuery = SEARCH_ALL_QUERY;
+			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+			stmt.setString(1, search);
+			ResultSet rset = stmt.executeQuery();
+			while (rset.next()) {				
+				companies.add(convertResultLine(rset));
+			}			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return companies;
+	}
+
 
 	@Override
 	public void createQuery(Company computer) throws Exception {
@@ -158,5 +212,8 @@ public class CompanyPersistor implements Persistor<Company>{
 		// TODO Auto-generated method stub
 		this.lazyStrategy = b;
 	}
+
+	
+	
 
 }

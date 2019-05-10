@@ -54,6 +54,27 @@ public abstract class GenericService<T> implements Service<T> {
 		return models;
 	}
 	@Override
+	public Set<T> orderedListAll(Long offset,Long limit, String att, Boolean asc){
+		Set<T> models =null;
+		try {
+			models = persistor.findAllQueryOrdered(offset,limit,att,asc);
+		}catch(Exception exp) {
+			logger.error("ERROR WHILE TRYING TO FETCH(ordered findAllQuery ) FROM PERSISTOR",exp);
+		}
+		return models;
+	}
+	@Override
+	public Set<T> listSearch(String search){
+		Set<T> models =null;
+		try {
+			models = persistor.searchQuery(search);
+		}catch(Exception exp) {
+			logger.error("ERROR WHILE TRYING TO FETCH(findAllQuery) FROM PERSISTOR",exp);
+		}
+		return models;
+	}
+	
+	@Override
 	public T findOne(Long id) {
 		T model = null;
 		try {

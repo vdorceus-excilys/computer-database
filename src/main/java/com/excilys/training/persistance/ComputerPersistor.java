@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -22,7 +24,9 @@ public class ComputerPersistor implements Persistor<Computer> {
 	private static final String 
 					FIND_ALL_QUERY_LAZY="SELECT `id`, `name`, `introduced`, `discontinued`, company_id FROM `computer-database-db`.computer",
 					FIND_ALL_QUERY="SELECT `computer`.`id`, `computer`.`name`, `introduced`, `discontinued`, `company_id`,`company`.`name` FROM `computer-database-db`.`computer` left join `computer-database-db`.`company` on `computer`.`company_id`=`company`.`id`",
+					SEARCH_ALL_QUERY="SELECT `computer`.`id`, `computer`.`name`, `introduced`, `discontinued`, `company_id`,`company`.`name` FROM `computer-database-db`.`computer` left join `computer-database-db`.`company` on `computer`.`company_id`=`company`.`id` WHERE `computer`.`name` LIKE ?",
 					FIND_ALL_QUERY_LIMIT="SELECT `computer`.`id`, `computer`.`name`, `introduced`, `discontinued`, `company_id`,`company`.`name` FROM `computer-database-db`.`computer` left join `computer-database-db`.`company` on `computer`.`company_id`=`company`.`id` LIMIT ?,?",
+					FIND_ALL_QUERY_ORDERED="SELECT `computer`.`id`, `computer`.`name`, `introduced`, `discontinued`, `company_id`,`company`.`name` FROM `computer-database-db`.`computer` left join `computer-database-db`.`company` on `computer`.`company_id`=`company`.`id` ORDER BY #columnOrder #directionOrder LIMIT ?,?",							
 					FIND_ONE_QUERY="SELECT `computer`.`id`, `computer`.`name`, `introduced`, `discontinued`, `company_id`,`company`.`name` FROM `computer-database-db`.`computer` left join `computer-database-db`.`company` on `computer`.`company_id`=`company`.`id` WHERE `computer`.`id` = ? LIMIT 1",
 					FIND_ONE_QUERY_LAZY="SELECT `id`, `name`, `introduced`, `discontinued`, `company_id` FROM `computer-database-db`.`computer` WHERE `id` = ? LIMIT 1",
 					CREATE_QUERY ="INSERT INTO `computer-database-db`.`computer`(`id`,`name`,`introduced`,`discontinued`,`company_id`) VALUES(?,?,?,?,?)",
@@ -30,6 +34,16 @@ public class ComputerPersistor implements Persistor<Computer> {
 					UPDATE_QUERY="UPDATE `computer-database-db`.`computer` SET `name` = ?, `introduced` = ?, `discontinued` = ?, `company_id`  = ? WHERE `id` = ?",
 					COUNT_QUERY="SELECT COUNT(*)  FROM `computer-database-db`.`computer`"
 					;
+	static Map<String,String> accepted = new HashMap<>();
+	static {
+		accepted.put("id","`computer`.`id`");
+		accepted.put("name","`computer`.`name`");
+		accepted.put("introduced","`computer`.`introduced`");
+		accepted.put("discontinued","`computer`.`discontinued`");
+		accepted.put("companyId","`company`.`id`");
+		accepted.put("companyName","`company`.`name`");
+	}
+	
 	
 	private final Database database;
 	private Boolean lazyStrategy;
@@ -60,6 +74,47 @@ public class ComputerPersistor implements Persistor<Computer> {
 			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
 			stmt.setLong(1, offset);
 			stmt.setLong(2, limit);
+			ResultSet rset = stmt.executeQuery();
+			while (rset.next()) {				
+				computers.add(convertResultLine(rset));
+			}			
+		} catch (SQLException e) {
+			logger.error("SQL Exception while calling FIND_ALL_QUERY_WITH_LIMIT",e);
+		}		
+		return computers;
+	}
+	@Override
+	public Set<Computer> findAllQueryOrdered(Long offset, Long limit, String att,Boolean asc) {
+		if(!accepted.containsKey(att)) {
+			return findAllQuery(offset,limit);
+		}else {
+			Set<Computer> computers = new TreeSet<Computer>();
+			try(Connection connection = database.getConnection()){
+				String sqlQuery = FIND_ALL_QUERY_ORDERED;
+				sqlQuery = sqlQuery.replace("#columnOrder",accepted.get(att));
+				sqlQuery = sqlQuery.replace("#directionOrder",asc? "ASC" : "DESC");
+				PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+				//stmt.setString(1,accepted.get(att));
+				//stmt.setString(2, asc? "ASC" : "DESC");
+				stmt.setLong(1, offset);
+				stmt.setLong(2, limit);
+				ResultSet rset = stmt.executeQuery();
+				while (rset.next()) {				
+					computers.add(convertResultLine(rset));
+				}			
+			} catch (SQLException e) {
+				logger.error("SQL Exception while calling FIND_ALL_QUERY_ORDERED",e);
+			}		
+			return computers;
+		}		
+	}
+	@Override
+	public Set<Computer> searchQuery(String search) {
+		Set<Computer> computers = new TreeSet<Computer>();
+		try(Connection connection = database.getConnection()){
+			String sqlQuery = SEARCH_ALL_QUERY;
+			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
+			stmt.setString(1, search);
 			ResultSet rset = stmt.executeQuery();
 			while (rset.next()) {				
 				computers.add(convertResultLine(rset));
@@ -172,6 +227,10 @@ public class ComputerPersistor implements Persistor<Computer> {
 	public void setLazyStrategy(Boolean b) {
 		this.lazyStrategy = b;
 	}
+
+	
+
+	
 	
 }
 

@@ -70,11 +70,33 @@ public class CompanyController implements Controller<Company> {
 		}
 		return cs;
 	}
+	@Override
+	public Set<DataTransferObject<Company>> list(Long offset, Long limit, String orderBy, Boolean order) {
+		Set<DataTransferObject<Company>> cs = new TreeSet<DataTransferObject<Company>>();
+		for(Company c : service.orderedListAll(offset,limit,orderBy,order)) {
+			cs.add((DefaultCompanySkin) mapper.reverse(c));
+		}
+		return cs;
+	}
+	@Override
+	public Set<DataTransferObject<Company>> list(String search) {
+		Set<DataTransferObject<Company>> cs = new TreeSet<DataTransferObject<Company>>();
+		for(Company c : service.listSearch(search)) {
+			cs.add((DefaultCompanySkin) mapper.reverse(c));
+		}
+		return cs;
+	}
 
 	@Override
 	public Long count() {		
 		return service.count();
 	}
+
+
+	
+
+
+	
 	
 	
 
