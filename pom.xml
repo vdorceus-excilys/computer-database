@@ -24,6 +24,7 @@
 		<selenium-java.version>3.141.59</selenium-java.version>
 		<HikariCP.version>2.6.1</HikariCP.version>
 		<servlet.version>4.0.1</servlet.version>
+		<spring.version>5.1.7.RELEASE</spring.version>
 		<!-- PLUGIN PROPERTIES -->
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
@@ -93,6 +94,11 @@
 			<version>${servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>		
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-context</artifactId>
+		    <version>${spring.version}</version>
+		</dependency>
     </dependencies>
     
     <build>

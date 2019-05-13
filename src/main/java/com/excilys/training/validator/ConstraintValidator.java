@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import com.excilys.training.validator.exception.*;
 
 
-public class ConstraintValidator implements Validator{
+public class ConstraintValidator implements Validator<Object>{
 
 	private HashMap<String,EvalBox> refs = new HashMap<>();
 	

@@ -11,7 +11,7 @@ import com.excilys.training.validator.Validator;
 import com.excilys.training.validator.exception.FailedValidationException;
 
 public abstract class GenericService<T> implements Service<T> {
-	protected Validator<T> validator;
+	protected Validator validator;
 	protected Persistor<T> persistor;
 	
 	protected static Logger logger = LogManager.getLogger(GenericService.class);
