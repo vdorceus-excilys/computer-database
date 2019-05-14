@@ -3,11 +3,11 @@ package com.excilus.training.test.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.excilys.training.config.AppConfig;
 import com.excilys.training.persistance.ComputerPersistor;
 import com.excilys.training.persistance.db.Database;
-import com.excilys.training.persistance.db.Mysql;
-import com.excilys.training.util.ConfigurationProperties;
 
 public class ComputerServiceTest {
 	
@@ -15,10 +15,10 @@ public class ComputerServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		ConfigurationProperties config = new ConfigurationProperties();
-		config.load(ConfigurationProperties.DEFAULT_PERSISTANCE_PATH);
-		Database db = new Mysql(config);
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+		Database db = context.getBean("testDatabase",Database.class);
 		persistor = new ComputerPersistor(db);
+		context.close();
 	}
 
 	@Test

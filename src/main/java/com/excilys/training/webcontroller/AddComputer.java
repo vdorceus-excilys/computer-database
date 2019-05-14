@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
@@ -25,6 +26,7 @@ import com.excilys.training.validator.exception.FailedValidationException;
 public class AddComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerController computerController;
+	private WebController webController;
 	private CompanyController companyController;
 	private static Logger logger = LogManager.getLogger(AddComputer.class);
        
@@ -33,8 +35,10 @@ public class AddComputer extends HttpServlet {
      */
     public AddComputer() {
         super();
-        computerController = WebController.getInstance().getComputerController(); 
-        companyController = WebController.getInstance().getCompanyController();
+        WebApplicationContext context = WebController.context(getServletContext());
+    	computerController  = context.getBean("computerWebController",ComputerController.class);
+    	companyController = context.getBean("companyWebController",CompanyController.class);
+    	webController = context.getBean(WebController.class);	
     }
     
     /**
@@ -43,7 +47,7 @@ public class AddComputer extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
-		request.setAttribute("lang",WebController.getInstance().language().get("fr"));
+		request.setAttribute("lang",webController.language().get("fr"));
 		request.setAttribute("companyList",companyController.list());
 		request.getRequestDispatcher("WEB-INF/add-computer.jsp").forward(request,response);
 	}
@@ -77,7 +81,7 @@ public class AddComputer extends HttpServlet {
 			logger.error("DTO Parsing Error",exp);
 			request.setAttribute("error","Error parsing your data");
 		}		
-		request.setAttribute("lang",WebController.getInstance().language().get("fr"));
+		request.setAttribute("lang",webController.language().get("fr"));
 		request.getRequestDispatcher("list-computer").forward(request,response);
 	}
 

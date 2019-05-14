@@ -10,23 +10,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.web.context.WebApplicationContext;
+
 import com.excilys.training.controller.ComputerController;
+import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.model.Computer;
 
 /**
  * Servlet implementation class Welcome
- */
+ */	
 @WebServlet("/list-computer")
 public class Welcome extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private ComputerController controller;
+	private WebController webController;
 	
     /**
      * Default constructor. 
      */
     public Welcome() {
-    	super();
-    	controller = WebController.getInstance().getComputerController();    		
+    	super();        	
+    	WebApplicationContext context = WebController.context(getServletContext());
+    	controller  = context.getBean("computerWebController", ComputerController.class);
+    	webController = context.getBean(WebController.class);
     }
 
 	/**
@@ -37,21 +44,21 @@ public class Welcome extends HttpServlet {
 		String paginationString = request.getParameter("pagination");
 		Long pagination = (paginationString==null) ? 10 : Long.valueOf(paginationString);
 		pagination = (pagination>100 || pagination<10) ? 10 : pagination;
-		WebController.getInstance().setPagination(pagination);
+		webController.setPagination(pagination);
 		
 		
 		response.getWriter().append("Served at: ").append(request.getContextPath());
-		Long limit = WebController.getInstance().getPagination();
-		Long nbPages = WebController.getInstance().calculatePages(controller.count());
+		Long limit = webController.getPagination();
+		Long nbPages = webController.calculatePages(controller.count());
 		String page = request.getParameter("page");
 		
 		Long currentPage = (page==null) ? 1 : Long.valueOf(page); 
 		currentPage = (currentPage>=nbPages || currentPage<1)? 1 : currentPage;
-		request.setAttribute("lang",WebController.getInstance().language().get("fr"));
+		request.setAttribute("lang",webController.language().get("fr"));
 		request.setAttribute("nbPages",nbPages);
 		
 		HttpSession session =request.getSession();
-		Set computers = null;
+		Set<DataTransferObject<Computer>> computers = null;
 		String orderBy = request.getParameter("orderBy");
 		String search = request.getParameter("search");
 		if(search!=null) {

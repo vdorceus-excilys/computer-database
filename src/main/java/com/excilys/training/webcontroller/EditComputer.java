@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
@@ -26,6 +27,7 @@ public class EditComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerController computerController;
 	private CompanyController companyController;
+	private WebController webController;
 	private static Logger logger = LogManager.getLogger(EditComputer.class);
        
     /**
@@ -33,8 +35,10 @@ public class EditComputer extends HttpServlet {
      */
     public EditComputer() {
     	super();
-        computerController = WebController.getInstance().getComputerController(); 
-        companyController = WebController.getInstance().getCompanyController();
+    	WebApplicationContext context = WebController.context(getServletContext());
+     	computerController  = context.getBean("computerWebController", ComputerController.class);
+     	companyController =  context.getBean("companyWebController", CompanyController.class);
+     	webController = context.getBean(WebController.class);	
     }
 
 	/**
@@ -45,7 +49,7 @@ public class EditComputer extends HttpServlet {
 		String idComputer = request.getParameter("idComputer");
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 		DefaultComputerSkin computer = (DefaultComputerSkin) computerController.show(idComputer);
-		request.setAttribute("lang",WebController.getInstance().language().get("fr"));
+		request.setAttribute("lang",webController.language().get("fr"));
 		request.setAttribute("computer",computer);
 		request.setAttribute("companyList",companyController.list());
 		request.getRequestDispatcher("WEB-INF/edit-computer.jsp").forward(request,response);
@@ -79,7 +83,7 @@ public class EditComputer extends HttpServlet {
 			logger.error("DTO Parsing Error",exp);
 			request.setAttribute("error","Error parsing your data");
 		}
-		request.setAttribute("lang",WebController.getInstance().language().get("fr"));
+		request.setAttribute("lang",webController.language().get("fr"));
 		request.getRequestDispatcher("list-computer").forward(request,response);
 	}
 

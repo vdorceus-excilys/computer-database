@@ -2,25 +2,20 @@ package com.excilys.training.controller;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.excilys.training.dto.DataTransferObject;
 import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.mapper.Mapper;
 import com.excilys.training.model.Computer;
 import com.excilys.training.service.Service;
-import com.excilys.training.validator.Validator;
 
 public class ComputerController implements Controller<Computer>{
 	
-	private static Logger logger = LogManager.getLogger(ComputerController.class);
 	
 	private final Service<Computer> service;
 	private final Mapper<Computer,DataTransferObject<Computer>> mapper;
 	private static ComputerController controller=null;
 	
-	private ComputerController(Service<Computer> service,Mapper<Computer,DataTransferObject<Computer>>  mapper) {
+	public ComputerController(Service<Computer> service,Mapper<Computer,DataTransferObject<Computer>>  mapper) {
 		this.service =  service;
 		this.mapper = mapper;
 	}

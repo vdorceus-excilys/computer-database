@@ -8,7 +8,6 @@ import com.excilys.training.dto.DefaultCompanySkin;
 import com.excilys.training.mapper.Mapper;
 import com.excilys.training.model.Company;
 import com.excilys.training.service.Service;
-import com.excilys.training.validator.Validator;
 
 public class CompanyController implements Controller<Company> {
 	
@@ -16,7 +15,7 @@ public class CompanyController implements Controller<Company> {
 	private final Mapper<Company,DataTransferObject<Company>> mapper;
 	private static CompanyController controller =null;
 	
-	private  CompanyController(Service<Company> service,Mapper<Company,DataTransferObject<Company>> mapper) {
+	public  CompanyController(Service<Company> service,Mapper<Company,DataTransferObject<Company>> mapper) {
 		this.service =  service;
 		this.mapper = mapper;
 	}

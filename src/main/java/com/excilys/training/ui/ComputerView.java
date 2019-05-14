@@ -5,21 +5,14 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.excilys.training.config.AppConfig;
 import com.excilys.training.controller.ComputerController;
 import com.excilys.training.controller.Controller;
 import com.excilys.training.dto.DataTransferObject;
 import com.excilys.training.dto.DefaultComputerSkin;
-import com.excilys.training.mapper.DefaultComputerMapper;
 import com.excilys.training.model.Computer;
-import com.excilys.training.persistance.CompanyPersistor;
-import com.excilys.training.persistance.ComputerPersistor;
-import com.excilys.training.persistance.db.Database;
-import com.excilys.training.persistance.db.Mysql;
-import com.excilys.training.service.CompanyService;
-import com.excilys.training.service.ComputerService;
-import com.excilys.training.util.ConfigurationProperties;
-import com.excilys.training.validator.ConstraintValidator;
 
 public class ComputerView implements View<Computer>{
 	
@@ -28,22 +21,24 @@ public class ComputerView implements View<Computer>{
 	private final Controller<Computer> controller;
 	
 	public ComputerView() {
-		ComputerPersistor computerPersistor = null;
-		CompanyPersistor companyPersistor =null;
-		try {
-			ConfigurationProperties config = new ConfigurationProperties();
-		config.load(ConfigurationProperties.DEFAULT_PERSISTANCE_PATH);
-		Database db = new Mysql(config);
-		computerPersistor = new ComputerPersistor(db);
-		companyPersistor = new CompanyPersistor(db);
-		}
-		catch(Exception exp) {
-			//log service exception
-			logger.error("ERROR WHILE TRYING TO SET COMPUTER CONFIGURATION WITH PROPERTIES",exp);
-		}
-		ComputerService serviceComputer = ComputerService.getInstance(computerPersistor,new ConstraintValidator());
-		CompanyService serviceCompany = CompanyService.getInstance(companyPersistor, new ConstraintValidator());
-		controller = ComputerController.getInstance(serviceComputer,new DefaultComputerMapper(serviceCompany));
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+    	controller  = (ComputerController) context.getBean("computerCliController");
+    	context.close();
+		/*
+		 * ComputerPersistor computerPersistor = null; CompanyPersistor companyPersistor
+		 * =null; try { ConfigurationProperties config = new ConfigurationProperties();
+		 * config.load(ConfigurationProperties.DEFAULT_PERSISTANCE_PATH); Database db =
+		 * new Mysql(config); computerPersistor = new ComputerPersistor(db);
+		 * companyPersistor = new CompanyPersistor(db); } catch(Exception exp) { //log
+		 * service exception logger.
+		 * error("ERROR WHILE TRYING TO SET COMPUTER CONFIGURATION WITH PROPERTIES",exp)
+		 * ; } ComputerService serviceComputer =
+		 * ComputerService.getInstance(computerPersistor,new ConstraintValidator());
+		 * CompanyService serviceCompany = CompanyService.getInstance(companyPersistor,
+		 * new ConstraintValidator()); controller =
+		 * ComputerController.getInstance(serviceComputer,new
+		 * DefaultComputerMapper(serviceCompany));
+		 */
 	}
 	
 	@Override 

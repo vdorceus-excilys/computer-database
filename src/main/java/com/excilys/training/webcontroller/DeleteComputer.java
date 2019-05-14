@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.context.WebApplicationContext;
+
 import com.excilys.training.controller.ComputerController;
 import com.excilys.training.dto.DefaultComputerSkin;
 
@@ -18,13 +20,16 @@ import com.excilys.training.dto.DefaultComputerSkin;
 public class DeleteComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerController computerController;
+	private WebController webController;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
     public DeleteComputer() {
         super();
-        computerController = WebController.getInstance().getComputerController(); 
+        WebApplicationContext context = WebController.context(getServletContext());
+    	computerController  = context.getBean("computerWebController",ComputerController.class);
+    	webController = context.getBean(WebController.class);	
     }
 
 	/**
@@ -37,7 +42,7 @@ public class DeleteComputer extends HttpServlet {
 		DefaultComputerSkin computer = new DefaultComputerSkin();
 		computer.setId(idComputer);
 		computerController.delete(computer);
-		request.setAttribute("lang",WebController.getInstance().language().get("fr"));
+		request.setAttribute("lang",webController.language().get("fr"));
 		request.getRequestDispatcher("list-computer").forward(request,response);
 	}
 

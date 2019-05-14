@@ -1,71 +1,20 @@
 package com.excilys.training.persistance.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javax.sql.DataSource;
 
-import com.excilys.training.util.ConfigurationProperties;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-public abstract class Database {	
-	protected static Logger logger = LogManager.getLogger(Database.class);
+public class Database extends JdbcTemplate {	
 	
-	//Hikari
-	private  HikariConfig hikariConfig = new  HikariConfig();
-	private  HikariDataSource hikariDataSource;
-	
-	
-	
-	ConfigurationProperties config;
-	protected String jdbcUrl ;
-	protected String dbUsername, dbPassword;
-	
-	
-	public Database(ConfigurationProperties config) {
-		this.config = config;
-		this.loadDriver();
-		this.configHikariCP();
+	private DataSource hikariDataSource;
+	public Database(DataSource dataSource) {
+		super(dataSource);
+		hikariDataSource = dataSource;
 	}
-	
-	protected void loadDriver() {
-		try {
-			Class.forName(config.readProperty("driver"));
-		}
-		catch(ClassNotFoundException exp) {
-			logger.error("Unable to load Mysql Driver",exp);
-			//log the bloody exception
-			System.err.println();			
-		}
-	}
-	
-	private void configHikariCP() {
-		hikariConfig.setJdbcUrl(this.config.readProperty("url"));
-		hikariConfig.setUsername(this.config.readProperty("username"));
-		hikariConfig.setPassword(this.config.readProperty("password"));
-		hikariConfig.addDataSourceProperty("cachePrepStmts","true");
-		hikariConfig.addDataSourceProperty("prepStmtCacheSize","250");
-		hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit",2048);
-		hikariDataSource = new  HikariDataSource(hikariConfig);
-	}
-	
 	public Connection getConnection() throws SQLException {
 		return  hikariDataSource.getConnection();
 	}
-	
-	public Connection getOldConnection() {
-		Connection connection = null;
-		try {
-			connection = DriverManager.getConnection(config.readProperty("url"),
-					config.readProperty("username"),
-					config.readProperty("password"));
-		}catch(Exception exp) {
-			logger.error("Database encountered a problem",exp);
-		}
-		return connection;
-	}	
-
 }

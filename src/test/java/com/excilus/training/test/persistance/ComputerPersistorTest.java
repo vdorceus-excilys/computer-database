@@ -11,24 +11,23 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.excilys.training.config.AppConfig;
 import com.excilys.training.model.Computer;
 import com.excilys.training.persistance.ComputerPersistor;
 import com.excilys.training.persistance.db.Database;
-import com.excilys.training.persistance.db.Mysql;
 import com.excilys.training.util.ConfigurationFile;
-import com.excilys.training.util.ConfigurationProperties;
 
 public class ComputerPersistorTest {
 	
-	static private ConfigurationProperties config;
 	static private Database db;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {	
-		config = new ConfigurationProperties();
-		config.load(ConfigurationProperties.H2_TEST_PERSISTANCE_PATH);
-		db = new Mysql(config);				
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+		db = context.getBean("testDatabase",Database.class);
+		context.close();
 	}
 
 	@AfterClass

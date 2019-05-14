@@ -6,17 +6,12 @@ import com.excilys.training.validator.Validator;
 
 public class ComputerService extends GenericService<Computer>{
 	
-	
-	
 	public ComputerService(ComputerPersistor persistor,Validator<Object> validator) {
 		super();
 		this.persistor = persistor;
 		this.validator = validator;
 	}
-	
-	private  static  ComputerService self=null;
-	
-	
+		
 	@Override
 	public Computer findByAttribut(String att, String value) {
 		return null;
