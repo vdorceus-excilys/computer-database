@@ -1,6 +1,8 @@
 package com.excilys.training.config;
 import java.io.IOException;
 
+import javax.sql.DataSource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +16,6 @@ import com.excilys.training.mapper.WebCompanyMapper;
 import com.excilys.training.mapper.WebComputerMapper;
 import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.persistance.ComputerPersistor;
-import com.excilys.training.persistance.db.Database;
 import com.excilys.training.service.CompanyService;
 import com.excilys.training.service.ComputerService;
 import com.excilys.training.util.ConfigurationProperties;
@@ -26,6 +27,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 public class AppConfig {
 	private static Logger logger = LogManager.getLogger(AppConfig.class);
+	private static final  String FAILED_TO_IMPORT_CONFIG= "Error importing configuration";
 	
 	
 	
@@ -35,21 +37,26 @@ public class AppConfig {
 		try {
 			config.load(ConfigurationProperties.DEFAULT_PERSISTANCE_PATH);
 		}catch(IOException exp) {
-			logger.error("Error importing configuration",exp);
-		}		
-		return config;
-	}
-	@Bean(name="testConfig")
-	public ConfigurationProperties testConfig() {
-		ConfigurationProperties  config = new ConfigurationProperties();
-		try {
-			config.load(ConfigurationProperties.DEFAULT_PERSISTANCE_PATH);
-		}catch(IOException exp) {
-			logger.error("Error importing configuration",exp);
+			logger.error(FAILED_TO_IMPORT_CONFIG,exp);
 		}		
 		return config;
 	}
 	
+	@Bean(name="defaultDataSource")
+	public DataSource defaultDataSource() {
+		ConfigurationProperties config = defaultConfig();
+		HikariConfig hikariConfig = new HikariConfig();
+		hikariConfig.setDriverClassName(config.readProperty("driver"));
+		hikariConfig.setJdbcUrl(config.readProperty("url"));
+		hikariConfig.setUsername(config.readProperty("username"));
+		hikariConfig.setPassword(config.readProperty("password"));
+		hikariConfig.setMaximumPoolSize(20);
+		hikariConfig.addDataSourceProperty("cachePrepStmts","true");
+		hikariConfig.addDataSourceProperty("prepStmtCacheSize","250");
+		hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit",2048);
+		return new  HikariDataSource(hikariConfig);
+	}
+		
 	
 	
 	@Bean
@@ -58,7 +65,7 @@ public class AppConfig {
 		try {
 			config.load("i19n/en.properties");
 		}catch(IOException exp) {
-			logger.error("Error importing configuration",exp);
+			logger.error(FAILED_TO_IMPORT_CONFIG,exp);
 		}		
 		return config;
 	}
@@ -68,49 +75,19 @@ public class AppConfig {
 		try {
 			config.load("i19n/fr.properties");
 		}catch(IOException exp) {
-			logger.error("Error importing configuration",exp);
+			logger.error(FAILED_TO_IMPORT_CONFIG,exp);
 		}		
 		return config;
 	}
-	
-	@Bean(name="defaultDatabase")
-	public Database defaultDatabase() {
-		ConfigurationProperties config = defaultConfig();
-		HikariConfig hikariConfig = new HikariConfig();
-		hikariConfig.setDriverClassName(config.readProperty("driver"));
-		hikariConfig.setJdbcUrl(config.readProperty("url"));
-		hikariConfig.setUsername(config.readProperty("username"));
-		hikariConfig.setPassword(config.readProperty("password"));
-		hikariConfig.setMaximumPoolSize(20);
-		hikariConfig.addDataSourceProperty("cachePrepStmts","true");
-		hikariConfig.addDataSourceProperty("prepStmtCacheSize","250");
-		hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit",2048);
-		HikariDataSource hikariDataSource = new  HikariDataSource(hikariConfig);
-		return new Database(hikariDataSource);
-	}
-	@Bean(name="testDatabase")
-	public Database testDatabase() {
-		ConfigurationProperties config = defaultConfig();
-		HikariConfig hikariConfig = new HikariConfig();
-		hikariConfig.setDriverClassName(config.readProperty("driver"));
-		hikariConfig.setJdbcUrl(config.readProperty("url"));
-		hikariConfig.setUsername(config.readProperty("username"));
-		hikariConfig.setPassword(config.readProperty("password"));
-		hikariConfig.setMaximumPoolSize(20);
-		hikariConfig.addDataSourceProperty("cachePrepStmts","true");
-		hikariConfig.addDataSourceProperty("prepStmtCacheSize","250");
-		hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit",2048);
-		HikariDataSource hikariDataSource = new  HikariDataSource(hikariConfig);
-		return new Database(hikariDataSource);
-	}
+
 	
 	@Bean
 	public ComputerPersistor computerPersistor() {		
-		return new ComputerPersistor(defaultDatabase());
+		return new ComputerPersistor(defaultDataSource());
 	}
 	@Bean
 	public CompanyPersistor companyPersistor() {
-		return new CompanyPersistor(defaultDatabase());
+		return new CompanyPersistor(defaultDataSource());
 	}
 	
 	@Bean

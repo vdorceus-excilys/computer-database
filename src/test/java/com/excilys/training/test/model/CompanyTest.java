@@ -24,6 +24,16 @@ public class CompanyTest {
 		companyB.setId(2L);companyB.setName("B");
 		companyC.setId(1L);companyC.setName("A");
 	}
+	
+	@Test
+	public void checkingToStringRepresentation() {
+		String expectedA = "ID=1 NAME=A";
+		String expectedB = "ID=2 NAME=B";
+		String expectedC = "ID=1 NAME=A";
+		assertEquals(expectedA,companyA.toString());
+		assertEquals(expectedB,companyB.toString());
+		assertEquals(expectedC,companyC.toString());
+	}
 
 	
 	@Test

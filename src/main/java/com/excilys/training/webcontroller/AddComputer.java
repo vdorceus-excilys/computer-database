@@ -77,10 +77,7 @@ public class AddComputer extends HttpServlet {
 			logger.error("DTO Validation Error",exp);
 			request.setAttribute("error","Validation Error");
 		}
-		catch(ParseException exp) {
-			logger.error("DTO Parsing Error",exp);
-			request.setAttribute("error","Error parsing your data");
-		}		
+				
 		request.setAttribute("lang",webController.language().get("fr"));
 		request.getRequestDispatcher("list-computer").forward(request,response);
 	}

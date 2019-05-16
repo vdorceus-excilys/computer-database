@@ -1,10 +1,11 @@
 package com.excilys.training.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 import com.excilys.training.validator.Constraint;
 
-public class Computer implements Comparable<Computer> {
+public class Computer implements Comparable<Computer>, Cloneable {
 	
 	@Constraint(clazz="java.lang.Long", minValue=1L,nullable=false)
 	private Long id;
@@ -54,38 +55,43 @@ public class Computer implements Comparable<Computer> {
 			
 		return this.getId().compareTo(c.getId());
 	}
-	@Override
-	public boolean equals(Object c) {
-		boolean eq = 
-				(c != null) &&
-				(c.getClass().equals(this.getClass())) &&
-				(this.id.equals(((Computer)c).getId())) &&
-				(this.name.equals(((Computer)c).getName()))			
-		;
-		//introduced
-		if(this.introduced!=null)
-			eq = eq && (this.introduced.equals(((Computer)c).getIntroduced()));
-		else if(((Computer)c).getIntroduced()!=null )
-			eq=false;
-		//discontinued
-		if(this.discontinued!=null)
-			eq = eq && (this.discontinued.equals(((Computer)c).getDiscontinued()));
-		else if(((Computer)c).getDiscontinued()!=null )
-			eq=false;
-		//company
-		if(this.company!=null)
-			eq = eq && (this.company.equals(((Computer)c).getCompany()));
-		else if(((Computer)c).getCompany()!=null )
-			eq=false;
-		return eq;
-	}
+
+
 	@Override
 	public String toString() {
 		
 		return "ID="+getId()+" NAME="+getName()+" INTRO="+getIntroduced()+" DISC="+getDiscontinued()+" COMPANY="+getCompany();
 	}
 	
-	
+	public Computer clone() {
+		Computer computer = new Computer();
+		computer.setId(this.id);
+		computer.setName(this.name);
+		computer.setIntroduced(this.introduced);
+		computer.setDiscontinued(this.discontinued);
+		computer.setCompany(this.company==null ? null : this.company.clone());
+		return computer;
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(company, discontinued, id, introduced, name);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Computer)) {
+			return false;
+		}
+		Computer other = (Computer) obj;
+		return Objects.equals(company, other.company) && Objects.equals(discontinued, other.discontinued)
+				&& Objects.equals(id, other.id) && Objects.equals(introduced, other.introduced)
+				&& Objects.equals(name, other.name);
+	}
 	
 	
 }

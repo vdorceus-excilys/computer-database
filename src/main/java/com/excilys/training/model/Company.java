@@ -1,8 +1,10 @@
 package com.excilys.training.model;
 
+import java.util.Objects;
+
 import com.excilys.training.validator.Constraint;
 
-public class Company implements Comparable<Company> {
+public class Company implements Comparable<Company> , Cloneable{
 	@Constraint(clazz="java.lang.Long", minValue=1L,nullable=false)
 	private Long id;
 	@Constraint(clazz="java.lang.String",minSize=3,maxSize=25,nullable=false,blank=false)
@@ -26,18 +28,37 @@ public class Company implements Comparable<Company> {
 		
 		return this.getId().compareTo(c.getId());
 	}
-	@Override
-	public boolean equals(Object c) {
-		boolean eq = 
-				(c!=null) &&
-				(this.getClass().equals(c.getClass())) &&
-				(this.id.equals(((Company)c).getId())) &&
-				(this.name.equals(((Company)c).getName()))
-		;
-		return eq;
-	}
+
+	
 	@Override
 	public String toString() {
-		return " ID="+getId()+" NAME="+getName();
+		return "ID="+getId()+" NAME="+getName();
 	}
+	
+	public Company clone() {
+		Company company = new Company();
+		company.setId(this.id);
+		company.setName(this.name);
+		return company;
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Company)) {
+			return false;
+		}
+		Company other = (Company) obj;
+		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
+	}
+	
+	
 }

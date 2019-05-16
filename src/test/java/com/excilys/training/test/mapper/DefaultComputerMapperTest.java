@@ -56,12 +56,13 @@ public class DefaultComputerMapperTest {
 		skinDummy.setIntroduced("24-04-2019");
 		skinDummy.setDiscontinued("24-04-2019");
 		skinDummy.setCompany("Apple");
-		when(companyService.findByAttribut(anyString(),anyString())).thenReturn(companyDummy);
+		
 		mapper = new DefaultComputerMapper(companyService);
 	}
 
 	@Test
 	public void forwardTest() {
+		when(companyService.findByAttribut(anyString(),anyString())).thenReturn(companyDummy);
 		assertEquals(computerDummy,mapper.forward(skinDummy));
 	}
 	

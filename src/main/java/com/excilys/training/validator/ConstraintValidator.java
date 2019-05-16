@@ -11,15 +11,26 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.excilys.training.validator.exception.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.excilys.training.validator.exception.BlankConstraintException;
+import com.excilys.training.validator.exception.ComparaisonConstraintException;
+import com.excilys.training.validator.exception.ExpectedValueConstraintException;
+import com.excilys.training.validator.exception.FailedValidationException;
+import com.excilys.training.validator.exception.MatchConstraintException;
+import com.excilys.training.validator.exception.NullConstraintException;
+import com.excilys.training.validator.exception.SizeConstraintException;
+import com.excilys.training.validator.exception.ValueConstraintException;
 
 
 public class ConstraintValidator implements Validator<Object>{
 
 	private HashMap<String,EvalBox> refs = new HashMap<>();
+	static private Logger logger = LogManager.getLogger(ConstraintValidator.class);
 	
 	@Override
-	public void validate(Object pojo) throws FailedValidationException, ParseException {
+	public void validate(Object pojo) throws FailedValidationException {
 		// TODO Auto-generated method stub
 		if(pojo==null) throw new FailedValidationException("Validation on null object");
 		
@@ -39,20 +50,20 @@ public class ConstraintValidator implements Validator<Object>{
 						refs.put(constraint.ref(),evalBox);
 					}
 					fieldSet.add(evalBox);
-				} catch (IllegalArgumentException | IllegalAccessException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				} catch (IllegalArgumentException | IllegalAccessException exp) {
+					logger.error("Exception with reflection in validate method",exp);
 				}			
 				
 			}			
 		}
 		for(EvalBox evalBox : fieldSet) {
-			evaluate(evalBox);
+			try {
+				evaluate(evalBox);
+			} catch (ParseException e) {
+				logger.error("Parsing exception while validating",e);
+			}
 		}
-		
-		
-		
-		
+		refs.clear();
 	}
 	
 	private void evaluate(EvalBox evalBox) throws FailedValidationException,ParseException{	

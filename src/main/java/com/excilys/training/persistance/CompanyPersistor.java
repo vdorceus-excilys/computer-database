@@ -10,26 +10,33 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.sql.DataSource;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import com.excilys.training.model.Company;
-import com.excilys.training.persistance.db.Database;
 
 public class CompanyPersistor implements Persistor<Company>{
 	
 	
-	private static final String 
-					FIND_ALL_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company`",
-					FIND_ALL_QUERY_LIMIT="SELECT `id`, `name` FROM `computer-database-db`.`company` LIMIT ?, ?",
-					FIND_ALL_QUERY_ORDERED="SELECT `id`, `name` FROM `computer-database-db`.`company` ORDER BY #columnOrder #directionOrder LIMIT ?, ?",
-					FIND_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company`",
-					SEARCH_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE `company`.`name` LIKE %?%",
-					FIND_ONE_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1",
-					FIND_ONE_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1",
-					CREATE_QUERY ="INSERT INTO `computer-database-db`.`company`(`id`,`name`) VALUES(?,?)",
-					DELETE_QUERY="DELETE FROM `computer-database-db`.`company` where `id` = ?",
-					DELETE_COMPUTER_WHERE_QUERY="DELETE FROM `computer-database-db`.`computer` where `company_id` = ?",
-					UPDATE_QUERY="UPDATE `computer-database-db`.`company` SET `name` = ? WHERE `id` = ?",
-					COUNT_QUERY="SELECT COUNT(*)  FROM `computer-database-db`.`company`"
-					;
+	private static final String FIND_ALL_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company`";
+	private static final String FIND_ALL_QUERY_LIMIT="SELECT `id`, `name` FROM `computer-database-db`.`company` LIMIT ?, ?";
+	private static final String FIND_ALL_QUERY_ORDERED="SELECT `id`, `name` FROM `computer-database-db`.`company` ORDER BY #columnOrder #directionOrder LIMIT ?, ?";
+	private static final String FIND_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company`";
+	private static final String SEARCH_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE `company`.`name` LIKE ?";
+	private static final String FIND_ONE_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1";
+	private static final String FIND_ONE_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1";
+	private static final String CREATE_QUERY ="INSERT INTO `computer-database-db`.`company`(`id`,`name`) VALUES(?,?)";
+	private static final String DELETE_QUERY="DELETE FROM `computer-database-db`.`company` where `id` = ?";
+	private static final String DELETE_COMPUTER_WHERE_QUERY="DELETE FROM `computer-database-db`.`computer` where `company_id` = ?";
+	private static final String UPDATE_QUERY="UPDATE `computer-database-db`.`company` SET `name` = ? WHERE `id` = ?";
+	private static final String COUNT_QUERY="SELECT COUNT(*)  FROM `computer-database-db`.`company`";
+	
+	private static Logger logger = LogManager.getLogger(CompanyPersistor.class);
 	
 	static Map<String,String> accepted = new HashMap<>();
 	static {
@@ -37,33 +44,33 @@ public class CompanyPersistor implements Persistor<Company>{
 		accepted.put("name","`company`.`name`");
 	}
 	
-	private final Database database;
+	private DataSource dataSource;
 	private Boolean lazyStrategy;
-	public CompanyPersistor(Database database) {
-		this.database = database;
+	private JdbcTemplate jdbcTemplate;
+	
+	
+	public CompanyPersistor(DataSource dataSource) {
+		this.dataSource = dataSource;
 		this.lazyStrategy =  false;
+		this.jdbcTemplate = new JdbcTemplate(this.dataSource);
 	}
 
 	@Override
 	public Set<Company> findAllQuery() {
 		Set<Company> companies = new TreeSet<Company>();
-		try(Connection connection = database.getConnection()){
-			Statement stmt = connection.createStatement();
-			ResultSet rset = (!lazyStrategy) ? stmt.executeQuery(FIND_ALL_QUERY) : stmt.executeQuery(FIND_ALL_QUERY_LAZY);
-			while (rset.next()) {				
-				companies.add(convertResultLine(rset));
-			}			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+		try {
+			companies.addAll( jdbcTemplate.query(FIND_ALL_QUERY, 
+					new BeanPropertyRowMapper<Company>(Company.class)));
+		}catch(DataAccessException exp) {
+			logger.error("COMPANY : FIND ALL QUERY / DataAccessException",exp);
+		}
 		return companies;
 	}
 	
 	@Override
 	public Set<Company> findAllQuery(Long offset, Long limit) {
 		Set<Company> companies = new TreeSet<Company>();
-		try(Connection connection = database.getConnection()){
+		try(Connection connection = dataSource.getConnection()){
 			String sqlQuery = FIND_ALL_QUERY_LIMIT;
 			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
 			stmt.setLong(1, offset);
@@ -84,15 +91,15 @@ public class CompanyPersistor implements Persistor<Company>{
 			return findAllQuery(offset, limit);
 		}else {
 			Set<Company> companies = new TreeSet<Company>();
-			try(Connection connection = database.getConnection()){
+			try(Connection connection = dataSource.getConnection()){
 				String sqlQuery = FIND_ALL_QUERY_ORDERED;
 				sqlQuery = sqlQuery.replace("#columnOrder",accepted.get(att));
 				sqlQuery = sqlQuery.replace("#directionOrder",asc? "ASC" : "DESC");
 				PreparedStatement stmt = connection.prepareStatement(sqlQuery);
 				//stmt.setString(1,accepted.get(att));
 				//stmt.setString(2, asc? "ASC" : "DESC");
-				stmt.setLong(3, offset);
-				stmt.setLong(4, limit);
+				stmt.setLong(1, offset);
+				stmt.setLong(2, limit);
 				ResultSet rset = stmt.executeQuery();
 				while (rset.next()) {				
 					companies.add(convertResultLine(rset));
@@ -106,8 +113,9 @@ public class CompanyPersistor implements Persistor<Company>{
 	}
 	@Override
 	public Set<Company> searchQuery(String search) {
+		search = "%"+search+"%";
 		Set<Company> companies = new TreeSet<Company>();
-		try(Connection connection = database.getConnection()){
+		try(Connection connection = dataSource.getConnection()){
 			String sqlQuery = SEARCH_ALL_QUERY;
 			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
 			stmt.setString(1, search);
@@ -125,7 +133,7 @@ public class CompanyPersistor implements Persistor<Company>{
 
 	@Override
 	public void createQuery(Company computer) throws Exception {
-		try(Connection connection = database.getConnection()){
+		try(Connection connection = dataSource.getConnection()){
 			String sqlQuery = CREATE_QUERY;
 			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
 			stmt.setLong(1, computer.getId());
@@ -138,7 +146,7 @@ public class CompanyPersistor implements Persistor<Company>{
 	}
 	@Override
 	public void deleteQuery(Company company) {
-		try(Connection connection = database.getConnection()){
+		try(Connection connection = dataSource.getConnection()){
 			String firstQuery = DELETE_COMPUTER_WHERE_QUERY;
 			String secondQuery = DELETE_QUERY;
 			connection.setAutoCommit(false);
@@ -156,7 +164,7 @@ public class CompanyPersistor implements Persistor<Company>{
 	}
 	@Override
 	public  void updateQuery(Company company) {
-		try(Connection connection = database.getConnection()){
+		try(Connection connection = dataSource.getConnection()){
 			String sqlQuery = UPDATE_QUERY;
 			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
 			stmt.setString(1, company.getName());
@@ -170,7 +178,7 @@ public class CompanyPersistor implements Persistor<Company>{
 	@Override
 	public Company findOneQuery(Long id) {
 		Company company = null;
-		try(Connection connection = database.getConnection()){
+		try(Connection connection = dataSource.getConnection()){
 			String sqlQuery = (!lazyStrategy) ? FIND_ONE_QUERY : FIND_ONE_QUERY_LAZY;
 			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
 			stmt.setLong(1,id);
@@ -188,7 +196,7 @@ public class CompanyPersistor implements Persistor<Company>{
 	@Override
 	public Long countAll() {
 		Long count =0L;
-		try(Connection connection = database.getConnection()){
+		try(Connection connection = dataSource.getConnection()){
 			Statement stmt = connection.createStatement();
 			ResultSet rset =  stmt.executeQuery(COUNT_QUERY);
 			count = rset.next()  ? rset.getLong(1) : 0L;						

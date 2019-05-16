@@ -121,10 +121,6 @@ public abstract class GenericService<T> implements Service<T> {
 		}
 		return state;
 	}
-	
-	@Override 
-	abstract public T findByAttribut(String att, String value); 
-	
 	@Override 
 	public Long count() {
 		Long count ;

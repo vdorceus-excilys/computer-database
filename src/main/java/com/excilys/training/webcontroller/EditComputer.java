@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
 import com.excilys.training.dto.DefaultComputerSkin;
-import com.excilys.training.validator.dto.ComputerDTOValidator;
+import com.excilys.training.validator.ConstraintValidator;
 import com.excilys.training.validator.exception.FailedValidationException;
 
 /**
@@ -72,17 +72,14 @@ public class EditComputer extends HttpServlet {
 		computer.setDiscontinued(discontinued);
 		computer.setCompany(company);
 		try {
-			new ComputerDTOValidator().validate(computer);
+			new ConstraintValidator().validate(computer);
 			computerController.update(computer);
 		}
 		catch(FailedValidationException exp) {
 			logger.error("DTO Validation Error",exp);
 			request.setAttribute("error","Validation Error");
 		}
-		catch(ParseException exp) {
-			logger.error("DTO Parsing Error",exp);
-			request.setAttribute("error","Error parsing your data");
-		}
+		
 		request.setAttribute("lang",webController.language().get("fr"));
 		request.getRequestDispatcher("list-computer").forward(request,response);
 	}

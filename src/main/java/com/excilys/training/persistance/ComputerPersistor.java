@@ -10,12 +10,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.sql.DataSource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
-import com.excilys.training.persistance.db.Database;
 
 public class ComputerPersistor implements Persistor<Computer> {
 	
@@ -45,9 +46,9 @@ public class ComputerPersistor implements Persistor<Computer> {
 	}
 	
 	
-	private final Database database;
+	private final DataSource database;
 	private Boolean lazyStrategy;
-	public ComputerPersistor(Database database) {
+	public ComputerPersistor(DataSource database) {
 		this.database = database;
 		this.lazyStrategy =  false;
 	}
@@ -94,8 +95,6 @@ public class ComputerPersistor implements Persistor<Computer> {
 				sqlQuery = sqlQuery.replace("#columnOrder",accepted.get(att));
 				sqlQuery = sqlQuery.replace("#directionOrder",asc? "ASC" : "DESC");
 				PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-				//stmt.setString(1,accepted.get(att));
-				//stmt.setString(2, asc? "ASC" : "DESC");
 				stmt.setLong(1, offset);
 				stmt.setLong(2, limit);
 				ResultSet rset = stmt.executeQuery();
@@ -110,6 +109,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 	}
 	@Override
 	public Set<Computer> searchQuery(String search) {
+		search = "%"+search+"%";
 		Set<Computer> computers = new TreeSet<Computer>();
 		try(Connection connection = database.getConnection()){
 			String sqlQuery = SEARCH_ALL_QUERY;
@@ -120,7 +120,7 @@ public class ComputerPersistor implements Persistor<Computer> {
 				computers.add(convertResultLine(rset));
 			}			
 		} catch (SQLException e) {
-			logger.error("SQL Exception while calling FIND_ALL_QUERY_WITH_LIMIT",e);
+			logger.error("SQL Exception while calling SEARCH_QUERY",e);
 		}		
 		return computers;
 	}
@@ -198,7 +198,6 @@ public class ComputerPersistor implements Persistor<Computer> {
 			ResultSet rset =  stmt.executeQuery(COUNT_QUERY);
 			count = rset.next()  ? rset.getLong(1) : 0L;						
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			logger.error("SQL Exception while calling COUNT_QUERY",e);
 		}		
 		return count;

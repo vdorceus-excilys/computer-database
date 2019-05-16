@@ -36,5 +36,13 @@ public class ComputerTest {
 		assertNotEquals(computerA,computerB);
 		assertNotEquals(computerA,computerEmpty);
 	}
+	
+	@Test
+	public void checkingToStringRepresentation() {
+		String expectedA = "ID=1 NAME=A INTRO=null DISC=null COMPANY=ID=1 NAME=A";
+		String expectedB = "ID=2 NAME=B INTRO=null DISC=null COMPANY=ID=2 NAME=B";
+		assertEquals(expectedA,computerA.toString());
+		assertEquals(expectedB,computerB.toString());
+	}
 
 }

@@ -6,18 +6,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.excilys.training.model.Computer;
+import com.excilys.training.validator.ConstraintValidator;
 import com.excilys.training.validator.exception.FailedValidationException;
-import com.excilys.training.validator.model.ComputerDefaultValidator;
 
 public class ComputerDefaultValidatorTest {
 	
 	Computer computerOkay,computerNoName, computerNoId, computerIncoherentDate, computerNegativeId;
 	SimpleDateFormat sdf;
-	ComputerDefaultValidator validator;
+	ConstraintValidator validator;
 
 	@Before
 	public void setUp() throws Exception {
-		validator = new ComputerDefaultValidator();
+		//validator = new ComputerDefaultValidator();
+		validator = new ConstraintValidator();
 		sdf = new SimpleDateFormat("dd-MM-yyyy");
 		computerOkay = new Computer();
 		computerOkay.setId(1L);
@@ -44,7 +45,7 @@ public class ComputerDefaultValidatorTest {
 				
 	}
 
-	@Test
+	@Test(expected=FailedValidationException.class)
 	public void validTest() {
 		validator.validate(computerOkay);
 	}
