@@ -1,10 +1,7 @@
 package com.excilys.training.persistance;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,21 +12,22 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.training.model.Company;
 
 public class CompanyPersistor implements Persistor<Company>{
 	
 	
-	private static final String FIND_ALL_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company`";
+
 	private static final String FIND_ALL_QUERY_LIMIT="SELECT `id`, `name` FROM `computer-database-db`.`company` LIMIT ?, ?";
 	private static final String FIND_ALL_QUERY_ORDERED="SELECT `id`, `name` FROM `computer-database-db`.`company` ORDER BY #columnOrder #directionOrder LIMIT ?, ?";
 	private static final String FIND_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company`";
 	private static final String SEARCH_ALL_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE `company`.`name` LIKE ?";
 	private static final String FIND_ONE_QUERY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1";
-	private static final String FIND_ONE_QUERY_LAZY="SELECT `id`, `name` FROM `computer-database-db`.`company` WHERE id = ? LIMIT 1";
+	
 	private static final String CREATE_QUERY ="INSERT INTO `computer-database-db`.`company`(`id`,`name`) VALUES(?,?)";
 	private static final String DELETE_QUERY="DELETE FROM `computer-database-db`.`company` where `id` = ?";
 	private static final String DELETE_COMPUTER_WHERE_QUERY="DELETE FROM `computer-database-db`.`computer` where `company_id` = ?";
@@ -45,13 +43,11 @@ public class CompanyPersistor implements Persistor<Company>{
 	}
 	
 	private DataSource dataSource;
-	private Boolean lazyStrategy;
 	private JdbcTemplate jdbcTemplate;
 	
 	
 	public CompanyPersistor(DataSource dataSource) {
 		this.dataSource = dataSource;
-		this.lazyStrategy =  false;
 		this.jdbcTemplate = new JdbcTemplate(this.dataSource);
 	}
 
@@ -59,8 +55,7 @@ public class CompanyPersistor implements Persistor<Company>{
 	public Set<Company> findAllQuery() {
 		Set<Company> companies = new TreeSet<Company>();
 		try {
-			companies.addAll( jdbcTemplate.query(FIND_ALL_QUERY, 
-					new BeanPropertyRowMapper<Company>(Company.class)));
+			companies.addAll( jdbcTemplate.query(FIND_ALL_QUERY, new CompanyRowMapper()	));
 		}catch(DataAccessException exp) {
 			logger.error("COMPANY : FIND ALL QUERY / DataAccessException",exp);
 		}
@@ -70,19 +65,11 @@ public class CompanyPersistor implements Persistor<Company>{
 	@Override
 	public Set<Company> findAllQuery(Long offset, Long limit) {
 		Set<Company> companies = new TreeSet<Company>();
-		try(Connection connection = dataSource.getConnection()){
-			String sqlQuery = FIND_ALL_QUERY_LIMIT;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setLong(1, offset);
-			stmt.setLong(2, limit);
-			ResultSet rset = stmt.executeQuery();
-			while (rset.next()) {				
-				companies.add(convertResultLine(rset));
-			}			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+		try {
+			companies.addAll(jdbcTemplate.query(FIND_ALL_QUERY_LIMIT,new Object[] {offset,limit}, new CompanyRowMapper()));
+		}catch(DataAccessException exp) {
+			logger.error("COMPANY : FIND ALL QUERY WITH OFFSET AND LIMIT / DataAccessException",exp);
+		}				
 		return companies;
 	}
 	@Override
@@ -90,24 +77,15 @@ public class CompanyPersistor implements Persistor<Company>{
 		if(!accepted.containsKey(att)) {
 			return findAllQuery(offset, limit);
 		}else {
-			Set<Company> companies = new TreeSet<Company>();
-			try(Connection connection = dataSource.getConnection()){
+			Set<Company> companies = new TreeSet<>();
+			try {
 				String sqlQuery = FIND_ALL_QUERY_ORDERED;
 				sqlQuery = sqlQuery.replace("#columnOrder",accepted.get(att));
 				sqlQuery = sqlQuery.replace("#directionOrder",asc? "ASC" : "DESC");
-				PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-				//stmt.setString(1,accepted.get(att));
-				//stmt.setString(2, asc? "ASC" : "DESC");
-				stmt.setLong(1, offset);
-				stmt.setLong(2, limit);
-				ResultSet rset = stmt.executeQuery();
-				while (rset.next()) {				
-					companies.add(convertResultLine(rset));
-				}			
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}		
+				companies.addAll(jdbcTemplate.query(sqlQuery,new Object[] {offset,limit}, new CompanyRowMapper()));
+			}catch(DataAccessException exp) {
+				logger.error("COMPANY : FIND ALL QUERY WITH OFFSET AND LIMIT + ORDER/ DataAccessException",exp);
+			}				
 			return companies;
 		}
 	}
@@ -115,113 +93,51 @@ public class CompanyPersistor implements Persistor<Company>{
 	public Set<Company> searchQuery(String search) {
 		search = "%"+search+"%";
 		Set<Company> companies = new TreeSet<Company>();
-		try(Connection connection = dataSource.getConnection()){
-			String sqlQuery = SEARCH_ALL_QUERY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setString(1, search);
-			ResultSet rset = stmt.executeQuery();
-			while (rset.next()) {				
-				companies.add(convertResultLine(rset));
-			}			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
+		companies.addAll(jdbcTemplate.query(SEARCH_ALL_QUERY,new Object[] {search}, new CompanyRowMapper()));		
 		return companies;
 	}
-
-
 	@Override
-	public void createQuery(Company computer) throws Exception {
-		try(Connection connection = dataSource.getConnection()){
-			String sqlQuery = CREATE_QUERY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setLong(1, computer.getId());
-			stmt.setString(2, computer.getName());
-			stmt.execute();						
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+	public void createQuery(Company computer) throws Exception {		
+		jdbcTemplate.update(CREATE_QUERY,computer.getId(),computer.getName());		
 	}
+	
+	@Transactional
 	@Override
 	public void deleteQuery(Company company) {
-		try(Connection connection = dataSource.getConnection()){
-			String firstQuery = DELETE_COMPUTER_WHERE_QUERY;
-			String secondQuery = DELETE_QUERY;
-			connection.setAutoCommit(false);
-			PreparedStatement firstStmt = connection.prepareStatement(firstQuery);
-			PreparedStatement secondStmt = connection.prepareStatement(secondQuery);
-			firstStmt.setLong(1,company.getId());
-			secondStmt.setLong(1,company.getId());
-			firstStmt.execute();
-			secondStmt.execute();	
-			connection.commit();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		jdbcTemplate.update(DELETE_COMPUTER_WHERE_QUERY,company.getId());
+		jdbcTemplate.update(DELETE_QUERY,company.getId());		
 	}
+	
 	@Override
 	public  void updateQuery(Company company) {
-		try(Connection connection = dataSource.getConnection()){
-			String sqlQuery = UPDATE_QUERY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setString(1, company.getName());
-			stmt.setLong(2, company.getId());
-			stmt.execute();						
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
+		jdbcTemplate.update(UPDATE_QUERY,company.getName(),company.getId());
 	}
+	
 	@Override
 	public Company findOneQuery(Long id) {
-		Company company = null;
-		try(Connection connection = dataSource.getConnection()){
-			String sqlQuery = (!lazyStrategy) ? FIND_ONE_QUERY : FIND_ONE_QUERY_LAZY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setLong(1,id);
-			ResultSet rset = stmt.executeQuery();
-			while (rset.next()) {				
-				company = convertResultLine(rset);
-			}			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		return company;
+		return jdbcTemplate.queryForObject(FIND_ONE_QUERY, new Object[] {id}, new CompanyRowMapper());
 	}
 	
 	@Override
 	public Long countAll() {
-		Long count =0L;
-		try(Connection connection = dataSource.getConnection()){
-			Statement stmt = connection.createStatement();
-			ResultSet rset =  stmt.executeQuery(COUNT_QUERY);
-			count = rset.next()  ? rset.getLong(1) : 0L;						
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		return count;
+		return jdbcTemplate.queryForObject(COUNT_QUERY,Long.class);		
 	}
-
-	@Override 
-	public Company convertResultLine(ResultSet rset) throws SQLException {
-		Company company = new Company();
-		company.setId(rset.getLong(1));
-		company.setName(rset.getString(2));
-		return company;
-	}
-
-	@Override
-	public void setLazyStrategy(Boolean b) {
-		// TODO Auto-generated method stub
-		this.lazyStrategy = b;
-	}
-
-	
-	
 
 }
+
+class CompanyRowMapper implements RowMapper<Company>{
+	@Override
+	public Company mapRow(ResultSet rset, int rowNum) throws SQLException {
+		Company company = new Company();
+		company.setId(rset.getLong("id"));
+		company.setName(rset.getString("name"));
+		return company;
+	}		
+}
+
+
+
+
+
+
+

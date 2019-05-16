@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +13,10 @@ import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
@@ -48,39 +51,32 @@ public class ComputerPersistor implements Persistor<Computer> {
 	
 	private final DataSource database;
 	private Boolean lazyStrategy;
+	private JdbcTemplate jdbcTemplate;
 	public ComputerPersistor(DataSource database) {
 		this.database = database;
 		this.lazyStrategy =  false;
+		this.jdbcTemplate = new JdbcTemplate(database);
 	}
 
 	@Override
 	public Set<Computer> findAllQuery() {
-		Set<Computer> computers = new TreeSet<Computer>();
-		try(Connection connection = database.getConnection()){
-			Statement stmt = connection.createStatement();
-			ResultSet rset = (!lazyStrategy) ? stmt.executeQuery(FIND_ALL_QUERY) : stmt.executeQuery(FIND_ALL_QUERY_LAZY);
-			while (rset.next()) {				
-				computers.add(convertResultLine(rset));
-			}			
-		} catch (SQLException e) {
-			logger.error("SQL Exception while calling FIND_ALL_QUERY",e);
-		}		
+		Set<Computer> computers = new TreeSet<>();
+		
+		try {
+			computers.addAll(jdbcTemplate.query(FIND_ALL_QUERY, new ComputerRowMapper()));
+		}catch(DataAccessException exp) {
+			logger.error("SQL Exception while calling FIND_ALL_QUERY",exp);
+		}				
 		return computers;
 	}
+	
 	@Override
 	public Set<Computer> findAllQuery(Long offset,Long limit) {
-		Set<Computer> computers = new TreeSet<Computer>();
-		try(Connection connection = database.getConnection()){
-			String sqlQuery = FIND_ALL_QUERY_LIMIT;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setLong(1, offset);
-			stmt.setLong(2, limit);
-			ResultSet rset = stmt.executeQuery();
-			while (rset.next()) {				
-				computers.add(convertResultLine(rset));
-			}			
-		} catch (SQLException e) {
-			logger.error("SQL Exception while calling FIND_ALL_QUERY_WITH_LIMIT",e);
+		Set<Computer> computers = new TreeSet<>();
+		try {
+			computers.addAll(jdbcTemplate.query(FIND_ALL_QUERY_LIMIT,new Object[] {offset,limit}, new ComputerRowMapper()));
+		}catch(DataAccessException exp) {
+			logger.error("SQL Exception while calling FIND_ALL_QUERY_WITH_LIMIT",exp);
 		}		
 		return computers;
 	}
@@ -89,122 +85,59 @@ public class ComputerPersistor implements Persistor<Computer> {
 		if(!accepted.containsKey(att)) {
 			return findAllQuery(offset,limit);
 		}else {
-			Set<Computer> computers = new TreeSet<Computer>();
-			try(Connection connection = database.getConnection()){
+			Set<Computer> computers = new TreeSet<>();
+			try {
 				String sqlQuery = FIND_ALL_QUERY_ORDERED;
 				sqlQuery = sqlQuery.replace("#columnOrder",accepted.get(att));
 				sqlQuery = sqlQuery.replace("#directionOrder",asc? "ASC" : "DESC");
-				PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-				stmt.setLong(1, offset);
-				stmt.setLong(2, limit);
-				ResultSet rset = stmt.executeQuery();
-				while (rset.next()) {				
-					computers.add(convertResultLine(rset));
-				}			
-			} catch (SQLException e) {
-				logger.error("SQL Exception while calling FIND_ALL_QUERY_ORDERED",e);
-			}		
+				computers.addAll(jdbcTemplate.query(sqlQuery, new Object[] {offset,limit}, new ComputerRowMapper()));
+			}catch(DataAccessException exp) {
+				logger.error("SQL Exception while calling FIND_ALL_QUERY_ORDERED",exp);
+			}	
 			return computers;
 		}		
 	}
 	@Override
 	public Set<Computer> searchQuery(String search) {
 		search = "%"+search+"%";
-		Set<Computer> computers = new TreeSet<Computer>();
-		try(Connection connection = database.getConnection()){
-			String sqlQuery = SEARCH_ALL_QUERY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setString(1, search);
-			ResultSet rset = stmt.executeQuery();
-			while (rset.next()) {				
-				computers.add(convertResultLine(rset));
-			}			
-		} catch (SQLException e) {
-			logger.error("SQL Exception while calling SEARCH_QUERY",e);
-		}		
+		Set<Computer> computers = new TreeSet<>();
+		computers.addAll(jdbcTemplate.query(SEARCH_ALL_QUERY, new Object[] {search}, new ComputerRowMapper()));				
 		return computers;
 	}
 
 	@Override
 	public void createQuery(Computer computer) throws Exception {
-		try(Connection connection = database.getConnection()){
-			String sqlQuery = CREATE_QUERY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setLong(1, computer.getId());
-			stmt.setString(2, computer.getName());
-			stmt.setDate(3, (computer.getIntroduced()==null)? null : new java.sql.Date(computer.getIntroduced().getTime()));
-			stmt.setDate(4, (computer.getDiscontinued()==null)? null :new java.sql.Date(computer.getDiscontinued().getTime()));
-			if(computer.getCompany()!=null && computer.getCompany().getId()!=null) {
-				stmt.setLong(5,computer.getCompany().getId());
-			}else {
-				stmt.setNull(5,java.sql.Types.DOUBLE);
-			}			
-			stmt.execute();						
-		} catch (SQLException e) {
-			logger.error("SQL Exception while calling CREATE_QUERY",e);
-		}	
+		Long companyId = computer.getCompany()==null ? null : computer.getCompany().getId();
+		jdbcTemplate.update(CREATE_QUERY,computer.getId(),computer.getName(),computer.getIntroduced(),computer.getDiscontinued(),companyId);		
 	}
+	
 	@Override
 	public void deleteQuery(Computer computer) {
-		try(Connection connection = database.getConnection()){
-			String sqlQuery = DELETE_QUERY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setLong(1,computer.getId());
-			stmt.execute();			
-		} catch (SQLException e) {
-			logger.error("SQL Exception while calling DELETE_QUERY",e);
-		}
+		jdbcTemplate.update(DELETE_QUERY,computer.getId());
 	}
+	
 	@Override
 	public  void updateQuery(Computer computer) {
-		try(Connection connection = database.getConnection()){
-			String sqlQuery = UPDATE_QUERY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setString(1, computer.getName());
-			stmt.setDate(2, (computer.getIntroduced()==null)? null : new java.sql.Date(computer.getIntroduced().getTime()));
-			stmt.setDate(3, (computer.getDiscontinued()==null)? null :new java.sql.Date(computer.getDiscontinued().getTime()));
-			if(computer.getCompany()!=null && computer.getCompany().getId()!=null) {
-				stmt.setLong(4,computer.getCompany().getId());
-			}else {
-				stmt.setNull(4, java.sql.Types.DOUBLE);
-			}
-			stmt.setLong(5, computer.getId());
-			stmt.execute();						
-		} catch (SQLException e) {
-			logger.error("SQL Exception while calling UPDATE_QUERY",e);
-		}	
+		Long companyId = computer.getCompany()==null ? null : computer.getCompany().getId();
+		jdbcTemplate.update(UPDATE_QUERY,computer.getName(),computer.getIntroduced(),computer.getDiscontinued(),companyId,computer.getId());
 	}
+	
 	@Override
 	public Computer findOneQuery(Long id) {
-		Computer computer = null;
-		try(Connection connection = database.getConnection()){
-			String sqlQuery = (!lazyStrategy) ? FIND_ONE_QUERY : FIND_ONE_QUERY_LAZY;
-			PreparedStatement stmt = connection.prepareStatement(sqlQuery);
-			stmt.setLong(1,id);
-			ResultSet rset = stmt.executeQuery();
-			while (rset.next()) {				
-				computer = convertResultLine(rset);
-			}			
-		} catch (SQLException e) {
-			logger.error("SQL Exception while calling FIND_ONE_QUERY",e);
-		}		
-		return computer;
+		return jdbcTemplate.queryForObject(FIND_ONE_QUERY, new Object[] {id}, new ComputerRowMapper());		
 	}
+	
 	@Override
 	public Long countAll() {
-		Long count =0L;
-		try(Connection connection = database.getConnection()){
-			Statement stmt = connection.createStatement();
-			ResultSet rset =  stmt.executeQuery(COUNT_QUERY);
-			count = rset.next()  ? rset.getLong(1) : 0L;						
-		} catch (SQLException e) {
-			logger.error("SQL Exception while calling COUNT_QUERY",e);
-		}		
-		return count;
+		return jdbcTemplate.queryForObject(COUNT_QUERY,Long.class);
 	}
+	
+}
 
-	@Override 
-	public Computer convertResultLine(ResultSet rset) throws SQLException {
+class ComputerRowMapper implements RowMapper<Computer>{
+
+	@Override
+	public Computer mapRow(ResultSet rset, int rowNum) throws SQLException {
 		Computer computer = new Computer();
 		computer.setId(rset.getLong(1));
 		computer.setName(rset.getString(2));
@@ -212,25 +145,19 @@ public class ComputerPersistor implements Persistor<Computer> {
 		computer.setDiscontinued(rset.getDate(4));
 		Company company = new Company();		
 		company.setId(rset.getLong(5));
-		if(!lazyStrategy)
-			company.setName(rset.getString(6));
-		if(company.getId()!=0)
-			computer.setCompany(company);
-		
+		company.setName(rset.getString(6));
+		if(company.getId()>0)
+			computer.setCompany(company);		
 		return computer;
 	}
 	
-	
-
-	@Override
-	public void setLazyStrategy(Boolean b) {
-		this.lazyStrategy = b;
-	}
-
-	
-
-	
-	
 }
+
+
+
+
+
+
+
 
 

@@ -1,6 +1,4 @@
 package com.excilys.training.persistance;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Set;
 
 public interface Persistor<T> {
@@ -12,8 +10,6 @@ public interface Persistor<T> {
 	void updateQuery(T model) throws Exception;
 	Long countAll();
 	T findOneQuery(Long id) throws Exception;
-	T convertResultLine(ResultSet s) throws SQLException;
-	void setLazyStrategy(Boolean b);
 	Set<T> findAllQueryOrdered(Long offset, Long limit, String att,Boolean asc);
 	Set<T> searchQuery(String search);
 
