@@ -1,4 +1,4 @@
-package com.excilys.training.test.model;
+package com.excilus.test.training.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;

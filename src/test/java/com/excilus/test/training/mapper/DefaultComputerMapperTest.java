@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.excilys.training.test.mapper;
+package com.excilus.test.training.mapper;
 
 import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.mapper.DefaultComputerMapper;

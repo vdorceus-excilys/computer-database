@@ -1,4 +1,4 @@
-package com.excilus.training.test.persistance;
+package com.excilus.test.training.persistance;
 
 import static org.junit.Assert.assertEquals;
 

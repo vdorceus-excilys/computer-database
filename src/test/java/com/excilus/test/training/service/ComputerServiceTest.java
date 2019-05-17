@@ -1,4 +1,4 @@
-package com.excilus.training.test.service;
+package com.excilus.test.training.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyBoolean;

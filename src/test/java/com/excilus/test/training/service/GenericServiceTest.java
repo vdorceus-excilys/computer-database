@@ -1,4 +1,4 @@
-package com.excilus.training.test.service;
+package com.excilus.test.training.service;
 
 import javax.sql.DataSource;
 

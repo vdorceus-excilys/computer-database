@@ -1,4 +1,4 @@
-package com.excilys.training.test.validation;
+package com.excilus.test.training.validation;
 
 import java.text.ParseException;
 import java.util.Date;

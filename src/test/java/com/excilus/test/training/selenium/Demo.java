@@ -1,4 +1,4 @@
-package com.excilys.training.test.selenium;
+package com.excilus.test.training.selenium;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;

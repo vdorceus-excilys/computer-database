@@ -1,4 +1,4 @@
-package com.excilys.training.test.model.validator;
+package com.excilus.test.training.model.validator;
 
 import java.text.SimpleDateFormat;
 

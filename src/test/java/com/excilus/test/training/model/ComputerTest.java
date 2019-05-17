@@ -1,4 +1,4 @@
-package com.excilys.training.test.model;
+package com.excilus.test.training.model;
 
 import org.junit.Before;
 import org.junit.Test;
