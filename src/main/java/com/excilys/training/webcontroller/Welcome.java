@@ -19,7 +19,7 @@ import com.excilys.training.model.Computer;
 /**
  * Servlet implementation class Welcome
  */	
-@WebServlet("/list-computer")
+//@WebServlet("/list-computer")
 public class Welcome extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	

@@ -22,7 +22,7 @@ import com.excilys.training.validator.exception.FailedValidationException;
 /**
  * Servlet implementation class EditComputer
  */
-@WebServlet("/edit-computer")
+//@WebServlet("/edit-computer")
 public class EditComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerController computerController;

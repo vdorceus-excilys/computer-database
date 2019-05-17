@@ -16,7 +16,7 @@ import com.excilys.training.dto.DefaultComputerSkin;
 /**
  * Servlet implementation class DeleteComputer
  */
-@WebServlet("/delete-computer")
+//@WebServlet("/delete-computer")
 public class DeleteComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerController computerController;
