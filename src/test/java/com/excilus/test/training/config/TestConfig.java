@@ -1,4 +1,4 @@
-package com.excilys.training.config;
+package com.excilus.test.training.config;
 
 import java.io.IOException;
 
@@ -31,7 +31,7 @@ public class TestConfig {
 		}		
 		return config;
 	}
-/*
+
 	@Bean(name="testDataSource")
 	public DataSource testDataSource() {
 		ConfigurationProperties config = testConfigurationProperties();
@@ -47,7 +47,7 @@ public class TestConfig {
 		return new  HikariDataSource(hikariConfig);
 	}
 	
-	*/
+	
 	@Bean(name="correctComputerA")
 	public Computer correctComputerA(){
 		Computer computer = new Computer();

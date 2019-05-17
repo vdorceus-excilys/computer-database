@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.excilys.training.config.TestConfig;
+import com.excilus.test.training.config.TestConfig;
 import com.excilys.training.model.Company;
 import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.util.ConfigurationFile;
