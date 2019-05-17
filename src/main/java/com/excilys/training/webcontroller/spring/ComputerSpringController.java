@@ -17,7 +17,7 @@ import com.excilys.training.model.Computer;
 import com.excilys.training.webcontroller.WebController;
 
 @Controller
-@RequestMapping("/computer")
+@RequestMapping("/")
 public class ComputerSpringController {
 	
 	@Resource(name="computerWebController")
@@ -25,7 +25,7 @@ public class ComputerSpringController {
 	@Autowired
 	WebController webController;
 	
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(value="/computer",method = RequestMethod.GET)
 	public String index(HttpSession session, ModelMap  model) {
 		String paginationString = (String) model.get("pagination");
 		Long pagination = (paginationString==null) ? 10 : Long.valueOf(paginationString);
