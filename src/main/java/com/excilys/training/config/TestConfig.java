@@ -31,7 +31,7 @@ public class TestConfig {
 		}		
 		return config;
 	}
-
+/*
 	@Bean(name="testDataSource")
 	public DataSource testDataSource() {
 		ConfigurationProperties config = testConfigurationProperties();
@@ -46,6 +46,8 @@ public class TestConfig {
 		hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit",2048);
 		return new  HikariDataSource(hikariConfig);
 	}
+	
+	*/
 	@Bean(name="correctComputerA")
 	public Computer correctComputerA(){
 		Computer computer = new Computer();
