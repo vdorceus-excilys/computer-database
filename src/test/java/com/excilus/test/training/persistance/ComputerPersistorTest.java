@@ -39,14 +39,10 @@ public class ComputerPersistorTest {
 	public void setUp() throws SQLException, Exception {
 		try(Connection connection = ds.getConnection()){
 			Statement statement = connection.createStatement();			
-			String sqls = new ConfigurationFile("test-db.sql").readAsString(); 
-			String sqlsData = new ConfigurationFile("test-db.sql").readAsString(); 
+			String sqls = new ConfigurationFile("test-db.sql").readAsString();  
 			for(String sql : sqls.split(";")) {
 				statement.executeUpdate(sql);
-			}	
-			/*
-			 * for(String sql : sqlsData.split(";")) { statement.executeUpdate(sql); }
-			 */
+			}
 		}		
 	}
 

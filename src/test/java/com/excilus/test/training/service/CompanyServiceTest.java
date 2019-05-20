@@ -1,49 +1,53 @@
 package com.excilus.test.training.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
+
+import javax.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.excilus.test.training.config.TestConfig;
 import com.excilys.training.model.Company;
-import com.excilys.training.model.Computer;
 import com.excilys.training.persistance.CompanyPersistor;
 import com.excilys.training.service.CompanyService;
-import com.excilys.training.service.ComputerService;
 import com.excilys.training.validator.ConstraintValidator;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes=TestConfig.class)
 public class CompanyServiceTest {
 	
 	@Mock CompanyPersistor persistor;
-	Company companyA, companyB;
+	
 	Set<Company> companies;
 	@Rule public MockitoRule mockitoRule = MockitoJUnit.rule();
 	CompanyService service;
+	@Resource(name="correctCompanyA")
+	Company companyA;
+	@Resource(name="correctCompanyB")
+	Company companyB;
 
 	@Before
 	public void setUp() throws Exception {
-		companyA = new Company();
-		companyB = new Company();
-		
-		companyA.setId(1L); companyA.setName("A");
-		companyB.setId(2L); companyB.setName("B");
-		
-		companies = new TreeSet<>();
-		companies.add(companyA);
-		companies.add(companyB);
+			
+		companies = new TreeSet<>(Arrays.asList(companyA,companyB));
 	}
 
 	@Test

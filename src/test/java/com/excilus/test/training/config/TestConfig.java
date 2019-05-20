@@ -70,5 +70,19 @@ public class TestConfig {
 		//computer.setCompany(company);
 		return computer;
 	}
+	@Bean(name="correctCompanyA")
+	public Company correctCompanyA() {
+		Company company = new Company();
+		company.setId(1L);
+		company.setName("A");
+		return company;
+	}
+	@Bean(name="correctCompanyB")
+	public Company correctCompanyB() {
+		Company company = new Company();
+		company.setId(2L);
+		company.setName("B");
+		return company;
+	}
 	
 }
