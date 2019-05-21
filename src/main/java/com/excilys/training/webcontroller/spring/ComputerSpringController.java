@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.training.controller.CompanyController;
@@ -25,7 +24,7 @@ import com.excilys.training.validator.exception.FailedValidationException;
 import com.excilys.training.webcontroller.WebController;
 
 @Controller
-@RequestMapping("/")
+
 public class ComputerSpringController {
 	
 	@Resource(name="computerWebController")
@@ -40,12 +39,12 @@ public class ComputerSpringController {
 	private final String COMPUTER_EDIT_VIEW = "edit-computer";
 	
 		
-	@GetMapping(value= {"/computer/list","/","/computer/index","/computer"})
+	@GetMapping({"/computer","/","/computer/index"})
 	public String list(HttpSession session, 
-			@RequestParam("page") String page,
-			@RequestParam("OrderBy") String orderBy,
-			@RequestParam("search") String search,
-			@RequestParam("pagination") String  paginationString,
+			@RequestParam(value="page",required=false) String page,
+			@RequestParam(value="OrderBy",required=false) String orderBy,
+			@RequestParam(value="search",required=false) String search,
+			@RequestParam(value="pagination", required=false) String  paginationString,
 			ModelMap  model) {
 		Long pagination = (paginationString==null) ? 10 : Long.valueOf(paginationString);
 		pagination = (pagination>100 || pagination<10) ? 10 : pagination;
@@ -56,7 +55,7 @@ public class ComputerSpringController {
 		
 		Long currentPage = (page==null) ? 1 : Long.valueOf(page); 
 		currentPage = (currentPage>=nbPages || currentPage<1)? 1 : currentPage;
-		model.put("lang",webController.language().get("fr"));
+		
 		model.put("nbPages",nbPages);
 		
 		Set<DataTransferObject<Computer>> computers = null;
@@ -94,16 +93,15 @@ public class ComputerSpringController {
 	
 	
 	@GetMapping(value="/computer/edit")
-	public String editGet(HttpSession session,@RequestParam("idComputer") String id, ModelMap model) {
+	public String editGet(@RequestParam("idComputer") String id, ModelMap model) {
 		DefaultComputerSkin computer = (DefaultComputerSkin) computerController.show(id);
-		model.put("lang",webController.language().get("fr"));
 		model.put("computer",computer);
 		model.put("companyList",companyController.list());
 		return COMPUTER_EDIT_VIEW;
 	}
 	
 	@PostMapping(value="/computer/edit")
-	public String editPost(HttpSession session,
+	public String editPost(
 			@RequestParam("idComputer") String id ,
 			@RequestParam("newComputerName") String name,
 			@RequestParam("newIntroducedDate") String introduced,
@@ -124,19 +122,18 @@ public class ComputerSpringController {
 			logger.error("DTO Validation Error",exp);
 			model.put("error","Validation Error");
 		}		
-		model.put("lang",webController.language().get("fr"));
+		
 		return COMPUTER_LIST_VIEW;
 	}
 	
 	
 	@GetMapping("/computer/add")
-	public String addGet(HttpSession session, ModelMap model) {
-		model.put("lang",webController.language().get("fr"));
+	public String addGet( ModelMap model) {		
 		model.put("companyList",companyController.list());
 		return COMPUTER_ADD_VIEW;
 	}
 	@PostMapping("/computer/add")
-	public String addPost(HttpSession session,
+	public String addPost(
 			@RequestParam("idComputer") String id ,
 			@RequestParam("newComputerName") String name,
 			@RequestParam("newIntroducedDate") String introduced,
@@ -156,8 +153,7 @@ public class ComputerSpringController {
 		catch(FailedValidationException exp) {
 			logger.error("DTO Validation Error",exp);
 			model.put("error","Validation Error");
-		}				
-		model.put("lang",webController.language().get("fr"));
+		}
 		return COMPUTER_LIST_VIEW;
 	}
 	@PostMapping("/computer/delete")
@@ -165,7 +161,6 @@ public class ComputerSpringController {
 		DefaultComputerSkin computer = new DefaultComputerSkin();
 		computer.setId(idComputer);
 		computerController.delete(computer);
-		model.put("lang",webController.language().get("fr"));
 		return COMPUTER_LIST_VIEW;
 	}
 	
