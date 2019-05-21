@@ -80,9 +80,8 @@ public class ComputerView implements View<Computer>{
 			System.out.println("Page "+(i+1)+" sur "+nbrePage);
 			Long offset =  i*Launcher.pagination;
 			Long limit = 1L * Launcher.pagination;
-			Set<DataTransferObject<Computer>> cs = controller.list(offset,limit);
-			for(DataTransferObject<Computer> comp : cs) {
-				DefaultComputerSkin computer = (DefaultComputerSkin) comp;
+			Set<DefaultComputerSkin> cs = (Set<DefaultComputerSkin>) controller.list(offset,limit);
+			for(DefaultComputerSkin computer : cs) {
 				System.out.println("<"+computer.getId()+"> "+computer.getName()+", par : "+computer.getCompany() +" ["+computer.getIntroduced()+"//"+computer.getDiscontinued()+"]"  );
 			}
 			

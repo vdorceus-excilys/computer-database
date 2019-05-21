@@ -1,6 +1,8 @@
 package com.excilys.training.webcontroller.spring;
 
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -13,11 +15,14 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
 import com.excilys.training.dto.DataTransferObject;
+import com.excilys.training.dto.DefaultCompanySkin;
 import com.excilys.training.dto.DefaultComputerSkin;
+import com.excilys.training.model.Company;
 import com.excilys.training.model.Computer;
 import com.excilys.training.validator.ConstraintValidator;
 import com.excilys.training.validator.exception.FailedValidationException;
@@ -58,7 +63,7 @@ public class ComputerSpringController {
 		
 		model.put("nbPages",nbPages);
 		
-		Set<DataTransferObject<Computer>> computers = null;
+		Set<DefaultComputerSkin> computers = null;
 		if(search!=null) {
 			computers = computerController.list(search);			
 			
@@ -128,9 +133,14 @@ public class ComputerSpringController {
 	
 	
 	@GetMapping("/computer/add")
-	public String addGet( ModelMap model) {		
-		model.put("companyList",companyController.list());
-		return COMPUTER_ADD_VIEW;
+	public ModelAndView addGet( ModelMap model) {		
+		
+		String companies = companyController.list()
+				.stream().map(c -> c.getName())
+				.collect(Collectors.joining(";")); 
+		DefaultComputerSkin computerDTO = new DefaultComputerSkin();
+		computerDTO.setCompany(companies);		
+		return new ModelAndView(COMPUTER_ADD_VIEW,"computer",computerDTO);
 	}
 	@PostMapping("/computer/add")
 	public String addPost(

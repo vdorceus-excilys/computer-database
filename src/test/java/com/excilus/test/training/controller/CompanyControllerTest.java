@@ -19,7 +19,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import com.excilys.training.controller.CompanyController;
-import com.excilys.training.dto.DataTransferObject;
 import com.excilys.training.dto.DefaultCompanySkin;
 import com.excilys.training.mapper.DefaultCompanyMapper;
 import com.excilys.training.model.Company;
@@ -93,7 +92,7 @@ public class CompanyControllerTest {
 	public void simpleListMethod() {
 		when(service.listAll()).thenReturn(new TreeSet<Company>(Arrays.asList(new Company[] {companyDummy})));
 		when(mapper.reverse(companyDummy)).thenReturn(skinDummy);
-		Set<DataTransferObject<Company>> listComputerDTO = controller.list();
+		Set<DefaultCompanySkin> listComputerDTO = controller.list();
 		assertEquals(1,listComputerDTO.size());
 		assertTrue(listComputerDTO.contains(skinDummy));		
 	}
@@ -101,7 +100,7 @@ public class CompanyControllerTest {
 	public void pagedListMethod() {
 		when(service.listAll(anyLong(),anyLong())).thenReturn(new TreeSet<Company>(Arrays.asList(new Company[] {companyDummy})));
 		when(mapper.reverse(companyDummy)).thenReturn(skinDummy);
-		Set<DataTransferObject<Company>> listComputerDTO = controller.list(1L,2L);
+		Set<DefaultCompanySkin> listComputerDTO = controller.list(1L,2L);
 		assertEquals(1,listComputerDTO.size());
 		assertTrue(listComputerDTO.contains(skinDummy));		
 	}

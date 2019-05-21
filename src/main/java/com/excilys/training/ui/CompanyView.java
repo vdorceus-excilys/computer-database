@@ -89,9 +89,9 @@ public class CompanyView implements View<Company> {
 			System.out.println("Page "+(i+1)+" sur "+nbrePage);
 			Long offset =  i*Launcher.pagination;
 			Long limit = 1L * Launcher.pagination;
-			Set<DataTransferObject<Company>> cs = controller.list(offset,limit);
-			for(DataTransferObject<Company> comp : cs) {
-				DefaultCompanySkin company = (DefaultCompanySkin) comp;
+			Set<DefaultCompanySkin> cs = (Set<DefaultCompanySkin>) controller.list(offset,limit);
+			for(DefaultCompanySkin company : cs) {
+				
 				System.out.println("<"+company.getId()+"> "+company.getName() );
 			}
 			

@@ -21,7 +21,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import com.excilys.training.controller.ComputerController;
-import com.excilys.training.dto.DataTransferObject;
 import com.excilys.training.dto.DefaultComputerSkin;
 import com.excilys.training.mapper.DefaultComputerMapper;
 import com.excilys.training.model.Company;
@@ -109,7 +108,7 @@ public class ComputerControllerTest {
 	public void simpleListMethod() {
 		when(service.listAll()).thenReturn(new TreeSet<Computer>(Arrays.asList(new Computer[] {computerDummy})));
 		when(mapper.reverse(computerDummy)).thenReturn(skinDummy);
-		Set<DataTransferObject<Computer>> listComputerDTO = controller.list();
+		Set<DefaultComputerSkin> listComputerDTO = controller.list();
 		assertEquals(1,listComputerDTO.size());
 		assertTrue(listComputerDTO.contains(skinDummy));		
 	}
@@ -117,7 +116,7 @@ public class ComputerControllerTest {
 	public void pagedListMethod() {
 		when(service.listAll(anyLong(),anyLong())).thenReturn(new TreeSet<Computer>(Arrays.asList(new Computer[] {computerDummy})));
 		when(mapper.reverse(computerDummy)).thenReturn(skinDummy);
-		Set<DataTransferObject<Computer>> listComputerDTO = controller.list(1L,2L);
+		Set<DefaultComputerSkin> listComputerDTO = controller.list(1L,2L);
 		assertEquals(1,listComputerDTO.size());
 		assertTrue(listComputerDTO.contains(skinDummy));		
 	}

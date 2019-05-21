@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Set;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,8 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.excilys.training.controller.ComputerController;
-import com.excilys.training.dto.DataTransferObject;
-import com.excilys.training.model.Computer;
+import com.excilys.training.dto.DefaultComputerSkin;
 
 /**
  * Servlet implementation class Welcome
@@ -58,7 +56,7 @@ public class Welcome extends HttpServlet {
 		request.setAttribute("nbPages",nbPages);
 		
 		HttpSession session =request.getSession();
-		Set<DataTransferObject<Computer>> computers = null;
+		Set<DefaultComputerSkin> computers = null;
 		String orderBy = request.getParameter("orderBy");
 		String search = request.getParameter("search");
 		if(search!=null) {
