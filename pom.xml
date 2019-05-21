@@ -25,6 +25,7 @@
 		<HikariCP.version>2.6.1</HikariCP.version>
 		<servlet.version>4.0.1</servlet.version>
 		<spring.version>5.1.7.RELEASE</spring.version>
+		<hibernate-validator.version>6.0.10.Final</hibernate-validator.version>
 		<!-- PLUGIN PROPERTIES -->
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
@@ -118,6 +119,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-validator</artifactId>
+		    <version>${hibernate-validator.version}</version>
 		</dependency>
 	</dependencies>
 
