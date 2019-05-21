@@ -48,34 +48,34 @@ public class ComputerController implements Controller<Computer>{
 	}
 
 	@Override
-	public Set<DataTransferObject<Computer>> list() {
+	public Set<DefaultComputerSkin> list() {
 		// TODO Auto-generated method stub
-		Set<DataTransferObject<Computer>> cs = new TreeSet<DataTransferObject<Computer>> ();
+		Set<DefaultComputerSkin> cs = new TreeSet<> ();
 		for(Computer c : service.listAll()) {
 			cs.add((DefaultComputerSkin) mapper.reverse(c));
 		}
 		return cs;
 	}
 	@Override
-	public Set<DataTransferObject<Computer>> list(Long offset,Long limit) {
+	public Set<DefaultComputerSkin> list(Long offset,Long limit) {
 		// TODO Auto-generated method stub
-		Set<DataTransferObject<Computer>> cs = new TreeSet<DataTransferObject<Computer>> ();
+		Set<DefaultComputerSkin> cs = new TreeSet<> ();
 		for(Computer c : service.listAll(offset,limit)) {
 			cs.add((DefaultComputerSkin) mapper.reverse(c));
 		}
 		return cs;
 	}
 	@Override
-	public Set<DataTransferObject<Computer>> list(Long offset, Long limit, String orderBy, Boolean order) {
-		Set<DataTransferObject<Computer>> cs = new TreeSet<DataTransferObject<Computer>> ();
+	public Set<DefaultComputerSkin> list(Long offset, Long limit, String orderBy, Boolean order) {
+		Set<DefaultComputerSkin> cs = new TreeSet<> ();
 		for(Computer c : service.orderedListAll(offset,limit,orderBy, order)) {
 			cs.add((DefaultComputerSkin) mapper.reverse(c));
 		}
 		return cs;
 	}
 	@Override
-	public Set<DataTransferObject<Computer>> list(String search) {
-		Set<DataTransferObject<Computer>> cs = new TreeSet<DataTransferObject<Computer>> ();
+	public Set<DefaultComputerSkin> list(String search) {
+		Set<DefaultComputerSkin> cs = new TreeSet<> ();
 		for(Computer c : service.listSearch(search)) {
 			cs.add((DefaultComputerSkin) mapper.reverse(c));
 		}

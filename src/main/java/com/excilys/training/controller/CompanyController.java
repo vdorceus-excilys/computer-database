@@ -27,33 +27,28 @@ public class CompanyController implements Controller<Company> {
 	
 	@Override
 	public DataTransferObject<Company> show(String id) {
-		DefaultCompanySkin skin = (DefaultCompanySkin) mapper.reverse(service.findOne(Long.parseLong(id)));
-		return skin;
+		return mapper.reverse(service.findOne(Long.parseLong(id)));
 	}
 
 	@Override
 	public void delete(DataTransferObject<Company> skin) {
-		// TODO Auto-generated method stub
 		service.delete(mapper.forward(skin));
 		
 	}
 
 	@Override
 	public void update(DataTransferObject<Company> skin) {
-		// TODO Auto-generated method stub
 		service.update(mapper.forward(skin));
 	}
 
 	@Override
 	public void create(DataTransferObject<Company> skin) {
-		// TODO Auto-generated method stub
 		service.create(mapper.forward(skin));
 	}
 
 	@Override
-	public Set<DataTransferObject<Company>> list() {
-		// TODO Auto-generated method stub
-		Set<DataTransferObject<Company>> cs = new TreeSet<DataTransferObject<Company>>();
+	public Set<DefaultCompanySkin> list() {
+		Set<DefaultCompanySkin> cs = new TreeSet<>();
 		for(Company c : service.listAll()) {
 			cs.add((DefaultCompanySkin) mapper.reverse(c));
 		}
@@ -61,25 +56,24 @@ public class CompanyController implements Controller<Company> {
 	}
 	
 	@Override
-	public Set<DataTransferObject<Company>> list(Long offset, Long limit) {
-		// TODO Auto-generated method stub
-		Set<DataTransferObject<Company>> cs = new TreeSet<DataTransferObject<Company>>();
+	public Set<DefaultCompanySkin> list(Long offset, Long limit) {
+		Set<DefaultCompanySkin> cs = new TreeSet<>();
 		for(Company c : service.listAll(offset,limit)) {
 			cs.add((DefaultCompanySkin) mapper.reverse(c));
 		}
 		return cs;
 	}
 	@Override
-	public Set<DataTransferObject<Company>> list(Long offset, Long limit, String orderBy, Boolean order) {
-		Set<DataTransferObject<Company>> cs = new TreeSet<DataTransferObject<Company>>();
+	public Set<DefaultCompanySkin> list(Long offset, Long limit, String orderBy, Boolean order) {
+		Set<DefaultCompanySkin> cs = new TreeSet<>();
 		for(Company c : service.orderedListAll(offset,limit,orderBy,order)) {
 			cs.add((DefaultCompanySkin) mapper.reverse(c));
 		}
 		return cs;
 	}
 	@Override
-	public Set<DataTransferObject<Company>> list(String search) {
-		Set<DataTransferObject<Company>> cs = new TreeSet<DataTransferObject<Company>>();
+	public Set<DefaultCompanySkin> list(String search) {
+		Set<DefaultCompanySkin> cs = new TreeSet<>();
 		for(Company c : service.listSearch(search)) {
 			cs.add((DefaultCompanySkin) mapper.reverse(c));
 		}
