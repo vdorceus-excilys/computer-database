@@ -27,27 +27,23 @@ public class ComputerController implements Controller<Computer>{
 
 	@Override
 	public DataTransferObject<Computer> show(String id) {
-		// TODO Auto-generated method stub
-		DefaultComputerSkin skin = (DefaultComputerSkin) mapper.reverse(service.findOne(Long.parseLong(id)));
-		return skin;
+		System.out.println(id);
+		return  mapper.reverse(service.findOne(Long.parseLong(id)));
 	}
 
 	@Override
 	public void delete(DataTransferObject<Computer> skin) {
-		// TODO Auto-generated method stub
 		service.delete(mapper.forward(skin));
 		
 	}
 
 	@Override
 	public void update(DataTransferObject<Computer> skin) {
-		// TODO Auto-generated method stub
 		service.update(mapper.forward(skin));
 	}
 
 	@Override
 	public void create(DataTransferObject<Computer> skin) {
-		// TODO Auto-generated method stub
 		service.create(mapper.forward(skin));
 	}
 

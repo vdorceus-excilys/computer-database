@@ -13,6 +13,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
@@ -38,21 +39,20 @@ public class ComputerSpringController {
 	private final String COMPUTER_ADD_VIEW = "add-computer";
 	private final String COMPUTER_EDIT_VIEW = "edit-computer";
 	
-	@GetMapping("/computer")
-	public String index(HttpSession session, ModelMap model) {
-		return list(session,model);
-	}
-	
-	@GetMapping(value="/computer/list")
-	public String list(HttpSession session, ModelMap  model) {
-		String paginationString = (String) model.get("pagination");
+		
+	@GetMapping(value= {"/computer/list","/","/computer/index","/computer"})
+	public String list(HttpSession session, 
+			@RequestParam("page") String page,
+			@RequestParam("OrderBy") String orderBy,
+			@RequestParam("search") String search,
+			@RequestParam("pagination") String  paginationString,
+			ModelMap  model) {
 		Long pagination = (paginationString==null) ? 10 : Long.valueOf(paginationString);
 		pagination = (pagination>100 || pagination<10) ? 10 : pagination;
 		webController.setPagination(pagination);
 		
 		Long limit = webController.getPagination();
 		Long nbPages = webController.calculatePages(computerController.count());
-		String page = (String) model.get("page");
 		
 		Long currentPage = (page==null) ? 1 : Long.valueOf(page); 
 		currentPage = (currentPage>=nbPages || currentPage<1)? 1 : currentPage;
@@ -60,8 +60,6 @@ public class ComputerSpringController {
 		model.put("nbPages",nbPages);
 		
 		Set<DataTransferObject<Computer>> computers = null;
-		String orderBy = (String) model.get("orderBy");
-		String search = (String) model.get("search");
 		if(search!=null) {
 			computers = computerController.list(search);			
 			
@@ -96,9 +94,8 @@ public class ComputerSpringController {
 	
 	
 	@GetMapping(value="/computer/edit")
-	public String editGet(HttpSession session, ModelMap model) {
-		String idComputer =(String) model.get("idComputer");
-		DefaultComputerSkin computer = (DefaultComputerSkin) computerController.show(idComputer);
+	public String editGet(HttpSession session,@RequestParam("idComputer") String id, ModelMap model) {
+		DefaultComputerSkin computer = (DefaultComputerSkin) computerController.show(id);
 		model.put("lang",webController.language().get("fr"));
 		model.put("computer",computer);
 		model.put("companyList",companyController.list());
@@ -106,12 +103,13 @@ public class ComputerSpringController {
 	}
 	
 	@PostMapping(value="/computer/edit")
-	public String editPost(HttpSession session, ModelMap model) {
-		String id = (String) model.get("newComputerId");
-		String name = (String) model.get("newComputerName");
-		String introduced = (String)  model.get("newIntroducedDate");
-		String discontinued = (String) model.get("newDiscontinuedDate");
-		String company = (String)("newComputerCompanyName");
+	public String editPost(HttpSession session,
+			@RequestParam("idComputer") String id ,
+			@RequestParam("newComputerName") String name,
+			@RequestParam("newIntroducedDate") String introduced,
+			@RequestParam("newDiscontinuedDate") String discontinued,
+			@RequestParam("newComputerCompanyName") String company,
+			ModelMap model) {
 		DefaultComputerSkin computer = new DefaultComputerSkin();
 		computer.setId(id);
 		computer.setName(name);
@@ -138,12 +136,13 @@ public class ComputerSpringController {
 		return COMPUTER_ADD_VIEW;
 	}
 	@PostMapping("/computer/add")
-	public String addPost(HttpSession session, ModelMap model) {
-		String name = (String) model.get("newComputerName");
-		String introduced = (String) model.get("newIntroducedDate");
-		String discontinued = (String) model.get("newDiscontinuedDate");
-		String company = (String) model.get("newComputerCompanyName");
-		
+	public String addPost(HttpSession session,
+			@RequestParam("idComputer") String id ,
+			@RequestParam("newComputerName") String name,
+			@RequestParam("newIntroducedDate") String introduced,
+			@RequestParam("newDiscontinuedDate") String discontinued,
+			@RequestParam("newComputerCompanyName") String company,
+			ModelMap model) {		
 		DefaultComputerSkin computer = new DefaultComputerSkin();
 		computer.setId("-100000");
 		computer.setName(name);
@@ -162,8 +161,7 @@ public class ComputerSpringController {
 		return COMPUTER_LIST_VIEW;
 	}
 	@PostMapping("/computer/delete")
-	public String delete(ModelMap model) {
-		String idComputer = (String) model.get("idComputer");
+	public String delete(@RequestParam("idComputer") String idComputer ,ModelMap model) {
 		DefaultComputerSkin computer = new DefaultComputerSkin();
 		computer.setId(idComputer);
 		computerController.delete(computer);
