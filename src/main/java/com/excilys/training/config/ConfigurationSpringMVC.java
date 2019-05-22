@@ -59,7 +59,10 @@ public class ConfigurationSpringMVC implements WebMvcConfigurer{
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(localeChangeInterceptor());
-	}
+	}	
+	//testing from this point
+	
+
 	
 	
 

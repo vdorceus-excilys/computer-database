@@ -1,11 +1,11 @@
 package com.excilys.training.webcontroller.spring;
 
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,17 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.excilys.training.controller.CompanyController;
 import com.excilys.training.controller.ComputerController;
-import com.excilys.training.dto.DataTransferObject;
-import com.excilys.training.dto.DefaultCompanySkin;
 import com.excilys.training.dto.DefaultComputerSkin;
-import com.excilys.training.model.Company;
-import com.excilys.training.model.Computer;
 import com.excilys.training.validator.ConstraintValidator;
 import com.excilys.training.validator.exception.FailedValidationException;
 import com.excilys.training.webcontroller.WebController;
@@ -143,22 +140,10 @@ public class ComputerSpringController {
 		return new ModelAndView(COMPUTER_ADD_VIEW,"computer",computerDTO);
 	}
 	@PostMapping("/computer/add")
-	public String addPost(
-			@RequestParam("idComputer") String id ,
-			@RequestParam("newComputerName") String name,
-			@RequestParam("newIntroducedDate") String introduced,
-			@RequestParam("newDiscontinuedDate") String discontinued,
-			@RequestParam("newComputerCompanyName") String company,
-			ModelMap model) {		
-		DefaultComputerSkin computer = new DefaultComputerSkin();
-		computer.setId("-100000");
-		computer.setName(name);
-		computer.setIntroduced(introduced);
-		computer.setDiscontinued(discontinued);
-		computer.setCompany(company);
+	public String addPost(@Valid @ModelAttribute("computer") DefaultComputerSkin computerDTO, ModelMap model) {				
 		try {
-			new ConstraintValidator().validate(computer);
-			computerController.create(computer);
+			new ConstraintValidator().validate(computerDTO);
+			computerController.create(computerDTO);
 		}
 		catch(FailedValidationException exp) {
 			logger.error("DTO Validation Error",exp);
